@@ -10,9 +10,6 @@ function handleClick(e) {
     const regex = /^([a-zA-Z]|[0-9]|-|_){4,15}$/;
     const error = document.querySelector(".error");
 
-    console.log(password);
-    console.log(confirm);
-
     if (password !== confirm) {
         if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
         let label = document.createElement('label');
@@ -36,7 +33,6 @@ function handleClick(e) {
             "password": password,
             "email": email
         });
-        console.log(obj);
 
         fetch('/user/register', {
             method: "POST",
