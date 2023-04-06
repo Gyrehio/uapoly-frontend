@@ -17,11 +17,17 @@ function handleClick(e) {
         if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
         let label = document.createElement('label');
         label.innerText = "Please enter the same passwords on the 2 fields.";
+        label.addEventListener('click', function() {
+            error?.removeChild(error.firstElementChild);
+        });
         error?.appendChild(label);
     } else if (!login.match(regex)) {
-        if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
+        if (error?.hasChildNodes()) {error?.removeChild(error.firstElementChild);}
         let label = document.createElement('label');
         label.innerText = "Invalid login. Please enter between 4 and 15 characters (letters, digits and dashes).";
+        label.addEventListener('click', function() {
+            error?.removeChild(error.firstElementChild);
+        });
         error?.appendChild(label);
     } else {
         if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
