@@ -7,6 +7,7 @@ function handleClick(e) {
     const password = document.querySelector("input[name='password']").value;
     const confirm = document.querySelector("input[name='confirmPassword']").value;
     const email = document.querySelector("input[name='email']").value;
+    const regex = /^([a-zA-Z]|[0-9]|-|_){4,15}$/;
     const error = document.querySelector(".error");
 
     console.log(password);
@@ -15,7 +16,12 @@ function handleClick(e) {
     if (password !== confirm) {
         if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
         let label = document.createElement('label');
-        label.innerText = "Please enter the same passwords on the 2 fields."
+        label.innerText = "Please enter the same passwords on the 2 fields.";
+        error?.appendChild(label);
+    } else if (!login.match(regex)) {
+        if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
+        let label = document.createElement('label');
+        label.innerText = "Invalid login. Please enter between 4 and 15 characters (letters, digits and dashes).";
         error?.appendChild(label);
     } else {
         if (error?.hasChildNodes()) {error.removeChild(error.firstElementChild);}
