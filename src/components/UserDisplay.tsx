@@ -3,13 +3,14 @@ import React from "react";
 const UserDisplay=({login, email})=> {
     return(
         <div className="displayInfos">
-            <div>
-                <label htmlFor="loginLabel">User's login :&nbsp;</label>
-                <label htmlFor="login">{login}</label>
+            <div className="infoTitle">
+                <label className="title" htmlFor="title">User informations</label>
             </div>
             <div>
-                <label htmlFor="emailLabel">User's email :&nbsp;</label>
-                <label htmlFor="email">{email}</label>
+                <label className="infos" htmlFor="loginLabel">User's login : {login}</label>
+            </div>
+            <div>
+                <label className="infos" htmlFor="emailLabel">User's email : {email}</label>
             </div>
         </div>
     );

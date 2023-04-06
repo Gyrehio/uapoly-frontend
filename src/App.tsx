@@ -4,6 +4,7 @@ import './App.css';
 
 import SignInPage from './components/SignInPage.tsx'
 import HomePage from './components/HomePage.tsx';
+import UserPage from './components/UserPage.tsx';
 
 const App =()=>{
   return (
@@ -13,6 +14,7 @@ const App =()=>{
           <Routes>
             <Route exact path='/' Component={HomePage} />
             <Route exact path='/signin' Component={SignInPage} /> 
+            <Route exact path='/user' Component={UserPage} />
             {/*<Route
               exact
               path='/widgets'
