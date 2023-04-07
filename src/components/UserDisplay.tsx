@@ -117,6 +117,13 @@ class UserDisplay extends Component {
                         ))}
                     </div>
                 </div>
+                <div className="displayInfos">
+                    <div className="infoTitle">
+                        <label className="title" htmlFor="title">Add a friend</label>
+                        <input type="text" name="addFriendLogin" /><br/>
+                        <input type="button" name="addFriend" value={"Add friend"} onClick={addFriend} /><br/>
+                    </div>
+                </div>
             </>
             
         );
