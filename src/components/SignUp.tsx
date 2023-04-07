@@ -20,7 +20,13 @@ function handleClick(e) {
         }
     })
     .then((response) => response.json())
-    .then((result) => console.log(result));
+    .then((result) => {
+        if (result["message"] != null) {
+            alert(result["message"]);
+        } else {
+            localStorage.setItem("token",result["token"]);
+        }
+    });
 }
 
 const SignUp=()=> {

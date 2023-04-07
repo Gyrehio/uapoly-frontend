@@ -81,7 +81,18 @@ div.infoTitle input[type='text'] {
     margin: 0 auto;
 }
 
-div.infoTitle input[type='button'] {
+div.infoTitle input[type='button'], div.friend input[type='button'] {
     display: block;
     margin: auto;
+}
+
+div.friend, div.sent div.friend, div.received div.friend {
+    text-align: center;
+    font-size: 15px;
+}
+
+div.sent, div.received {
+    font-size: 20px;
+    text-align: center;
+    border-top: 1px white solid;
 }

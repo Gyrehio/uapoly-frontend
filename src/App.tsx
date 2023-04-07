@@ -15,28 +15,6 @@ const App =()=>{
             <Route exact path='/' Component={HomePage} />
             <Route exact path='/signin' Component={SignInPage} /> 
             <Route exact path='/user' Component={UserPage} />
-            {/*<Route
-              exact
-              path='/widgets'
-              render={(props)=>
-                <Fragment>
-              
-                  <Widgets prods={widgetprods}/>
-                
-                </Fragment>
-              }
-            />
-          <Route
-            exact
-            path='/wudgets'
-            render={(props)=>
-              <Fragment>
-            
-                <Wudgets prods={wudgetprods}/>
-              
-              </Fragment>
-            }
-          />*/}
           </Routes>
         </div>
       </div>
