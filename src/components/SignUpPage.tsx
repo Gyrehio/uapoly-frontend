@@ -1,14 +1,14 @@
 import React from 'react';
 import Template from './Template.tsx';
-import SignIn from './SignIn.tsx';
+import SignUp from './SignUp.tsx';
 
-const SignInPage=()=> {
+const SignUpPage=()=> {
     return (
         <div className='homepage'>
             <Template />
-            <SignIn />
+            <SignUp />
         </div>
     );
 }
 
-export default SignInPage;
+export default SignUpPage;
