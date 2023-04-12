@@ -14,7 +14,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
     constructor(props) {
         super(props);
 
-        let states: UserDisplayState = {
+        this.state = {
             login: '',
             email: '',
             friends: [],
@@ -22,6 +22,10 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             sent: [],
         };
 
+        this.update();
+    }
+
+    update() {
         this.state = {
             login: '',
             email: '',
@@ -55,28 +59,102 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
         })
 
         Promise.all([me, friend, pending])
-            .then(([meResolved, friendResolved, pendingResolved]) => {
-                Promise.all([meResolved.json(), friendResolved.json(), pendingResolved.json()])
-                    .then(([meJson, friendJson, pendingJson]) => {
-                        this.setState({
-                            login: meJson.login,
-                            email: meJson.email,
-                            friends: friendJson.map((friend) => {
-                                if (friend.firstAccountLogin !== meJson.login) {
-                                    return friend.firstAccountLogin;
-                                } else {
-                                    return friend.secondAccountLogin;
-                                }
-                            }),
-                            received: pendingJson.received.map((friend) => friend.firstAccountLogin),
-                            sent: pendingJson.sent.map((friend) => friend.secondAccountLogin),
-                        })
-                    });
+        .then(([meResolved, friendResolved, pendingResolved]) => {
+            Promise.all([meResolved.json(), friendResolved.json(), pendingResolved.json()])
+            .then(([meJson, friendJson, pendingJson]) => {
+                this.setState({
+                    login: meJson.login,
+                    email: meJson.email,
+                    friends: friendJson.map((friend) => {
+                        if (friend.firstAccountLogin !== meJson.login) {
+                            return friend.firstAccountLogin;
+                        } else {
+                            return friend.secondAccountLogin;
+                        }
+                    }),
+                    received: pendingJson.received.map((friend) => friend.firstAccountLogin),
+                    sent: pendingJson.sent.map((friend) => friend.secondAccountLogin),
+                })
             });
+        });
+    }
 
-        this.setState(states);
+    shouldComponentUpdate(nextState) {
+        if (this.state.login !== nextState.login) {
+            return true;
+        }
+        if (this.state.email !== nextState.email) {
+            return true;
+        }
+        if (this.state.friends !== nextState.friends) {
+            return true;
+        }
+        if (this.state.received !== nextState.received) {
+            return true;
+        }
+        if (this.state.sent !== nextState.sent) {
+            return true;
+        }
+        return false;
+    }
 
-        console.log(this.state);
+    clickOnRemoveButton(e) {
+        e.preventDefault();
+        const login = e.target.name;
+
+        const obj = JSON.stringify({
+            "login": login,
+        });
+
+        const action = fetch('/friend/remove', {
+            method: "POST",
+            body: obj,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer ".concat(localStorage.token)
+            }
+        })
+        .then((response) => response.json())
+        .then(() => this.update());
+    }
+
+    clickOnAddButton(e) {
+        e.preventDefault();
+        const login = e.target.name;
+
+        const obj = JSON.stringify({
+            "login": login
+        });
+
+        const action = fetch('/friend/add', {
+            method: "POST",
+            body: obj,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer ".concat(localStorage.token)
+            }
+        })
+        .then((response) => response.json())
+        .then(() => this.update());
+    }
+
+    clickOnAddWriting(e) {
+        e.preventDefault();
+        const login = document.querySelector('input[type="text"]')?.value;
+        const obj = JSON.stringify({
+            "login": login
+        });
+
+        const action = fetch('/friend/add', {
+            method: "POST",
+            body: obj,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer ".concat(localStorage.token)
+            }
+        })
+        .then((response) => response.json())
+        .then(() => this.update());
     }
 
     render(): React.ReactNode {
@@ -101,7 +179,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
                         {this.state.friends.map((friend) => (
                         <>
                             <div className="friend">{friend}</div>
-                            <input type="button" name={friend} value={"Remove friend"} onClick={removeFriendButton}/>
+                            <input type="button" name={friend} value={"Remove friend"} onClick={this.clickOnRemoveButton.bind(this)}/>
                         </>
                         ))}
                     </div>
@@ -115,8 +193,8 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
                         {this.state.received.map((friend) => (
                         <>
                             <div className="friend">{friend}</div>
-                            <input type="button" name={friend} value={"Accept the invitation"} onClick={addFriendButton}/>
-                            <input type="button" name={friend} value={"Refuse the invitation"} onClick={removeFriendButton}/>
+                            <input type="button" name={friend} value={"Accept the invitation"} onClick={this.clickOnAddButton.bind(this)}/>
+                            <input type="button" name={friend} value={"Refuse the invitation"} onClick={this.clickOnRemoveButton.bind(this)}/>
                         </>
                         ))}
                         
@@ -126,7 +204,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
                         {this.state.sent.map((friend) => (
                         <>
                             <div className="friend">{friend}</div>
-                            <input type="button" name={friend} value={"Don't invite anymore"} onClick={removeFriendButton}/>
+                            <input type="button" name={friend} value={"Don't invite anymore"} onClick={this.clickOnRemoveButton.bind(this)}/>
                         </>
                         ))}
                     </div>
@@ -135,22 +213,23 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
                     <div className="infoTitle">
                         <label className="title" htmlFor="title">Add a friend</label>
                         <input type="text" name="addFriendLogin" /><br/>
-                        <input type="button" name="addFriend" value={"Add friend"} onClick={addFriendWriting} /><br/>
+                        <input type="button" name="addFriend" value={"Add friend"} onClick={this.clickOnAddWriting.bind(this)} /><br/>
                     </div>
                 </div>
             </>
             
         );
-    }
+    }   
 }
 
-function addFriendWriting(e) {
+async function addFriendWriting(e) {
     e.preventDefault();
+    const login = document.querySelector('input[type="text"]')?.value;
     const obj = JSON.stringify({
-        "login": this.state.newfriendlogin,
+        "login": login
     });
 
-    fetch('/friend/add', {
+    const action = await fetch('/friend/add', {
         method: "POST",
         body: obj,
         headers: {
@@ -160,9 +239,11 @@ function addFriendWriting(e) {
     })
     .then((response) => response.json())
     .then((result) => console.log(result));
+
+    //window.location.reload();
 }
 
-function addFriendButton(e) {
+async function addFriendButton(e) {
     e.preventDefault();
     const login = e.target.name;
 
@@ -170,7 +251,7 @@ function addFriendButton(e) {
         "login": login
     });
 
-    fetch('/friend/add', {
+    const action = await fetch('/friend/add', {
         method: "POST",
         body: obj,
         headers: {
@@ -180,9 +261,11 @@ function addFriendButton(e) {
     })
     .then((response) => response.json())
     .then((result) => console.log(result));
+
+    //window.location.reload();
 }
 
-function removeFriendButton(e) {
+async function removeFriendButton(e) {
     e.preventDefault();
     const login = e.target.name;
 
@@ -190,7 +273,7 @@ function removeFriendButton(e) {
         "login": login,
     });
 
-    fetch('/friend/remove', {
+    const action = await fetch('/friend/remove', {
         method: "POST",
         body: obj,
         headers: {
@@ -200,6 +283,8 @@ function removeFriendButton(e) {
     })
     .then((response) => response.json())
     .then((result) => console.log(result));
+
+    //window.location.reload();
 }
 
 export default UserDisplay;
