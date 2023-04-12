@@ -8,7 +8,6 @@ const HomePage=()=> {
         <div className='homepage'>
             <Template />
             <SignIn />
-            <Link to='/user'>Test UserPage</Link>
         </div>
     );
 }

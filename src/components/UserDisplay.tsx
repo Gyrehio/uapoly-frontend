@@ -79,25 +79,6 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
         });
     }
 
-    shouldComponentUpdate(nextState) {
-        if (this.state.login !== nextState.login) {
-            return true;
-        }
-        if (this.state.email !== nextState.email) {
-            return true;
-        }
-        if (this.state.friends !== nextState.friends) {
-            return true;
-        }
-        if (this.state.received !== nextState.received) {
-            return true;
-        }
-        if (this.state.sent !== nextState.sent) {
-            return true;
-        }
-        return false;
-    }
-
     clickOnRemoveButton(e) {
         e.preventDefault();
         const login = e.target.name;
@@ -213,78 +194,13 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
                     <div className="infoTitle">
                         <label className="title" htmlFor="title">Add a friend</label>
                         <input type="text" name="addFriendLogin" /><br/>
-                        <input type="button" name="addFriend" value={"Add friend"} onClick={this.clickOnAddWriting.bind(this)} /><br/>
+                        <input type="button" name="addFriend" value={"Add friend"}  onClick={this.clickOnAddWriting.bind(this)} /><br/>
                     </div>
                 </div>
             </>
             
         );
     }   
-}
-
-async function addFriendWriting(e) {
-    e.preventDefault();
-    const login = document.querySelector('input[type="text"]')?.value;
-    const obj = JSON.stringify({
-        "login": login
-    });
-
-    const action = await fetch('/friend/add', {
-        method: "POST",
-        body: obj,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer ".concat(localStorage.token)
-        }
-    })
-    .then((response) => response.json())
-    .then((result) => console.log(result));
-
-    //window.location.reload();
-}
-
-async function addFriendButton(e) {
-    e.preventDefault();
-    const login = e.target.name;
-
-    const obj = JSON.stringify({
-        "login": login
-    });
-
-    const action = await fetch('/friend/add', {
-        method: "POST",
-        body: obj,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer ".concat(localStorage.token)
-        }
-    })
-    .then((response) => response.json())
-    .then((result) => console.log(result));
-
-    //window.location.reload();
-}
-
-async function removeFriendButton(e) {
-    e.preventDefault();
-    const login = e.target.name;
-
-    const obj = JSON.stringify({
-        "login": login,
-    });
-
-    const action = await fetch('/friend/remove', {
-        method: "POST",
-        body: obj,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer ".concat(localStorage.token)
-        }
-    })
-    .then((response) => response.json())
-    .then((result) => console.log(result));
-
-    //window.location.reload();
 }
 
 export default UserDisplay;
