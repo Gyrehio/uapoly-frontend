@@ -39,7 +39,7 @@ class SignIn extends Component<UserPageProps, UserPageState> {
                     </div>
                     <br/>
                     <div className="buttonHolder">
-                        <input type="button" name="button" value={"Sign in"} onClick={this.handleClick.bind(this)}/>
+                        <input type="submit" name="button" value={"Sign in"} onClick={this.handleClick.bind(this)}/>
                     </div>
                 </form>
                 <div className="redirect">
@@ -50,7 +50,7 @@ class SignIn extends Component<UserPageProps, UserPageState> {
         );
     }
 
-    async handleClick(e) {
+    handleClick(e) {
         e.preventDefault()
 
         const obj = JSON.stringify({

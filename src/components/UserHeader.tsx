@@ -1,10 +1,12 @@
 import React, {Component} from "react";
 
+type UserHeaderProps = {};
+
 type UserHeaderState = {
     login: string
 }
 
-class UserHeader extends Component {
+class UserHeader extends Component<UserHeaderProps, UserHeaderState> {
     constructor(props) {
         super(props);
 

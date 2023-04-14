@@ -52,7 +52,7 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                     </div>
                     <br/>
                     <div className="buttonHolder">
-                        <input type="button" name="button" value={"Sign up"} onClick={this.handleClick.bind(this)}/>
+                        <input type="submit" name="button" value={"Sign up"} onClick={this.handleClick.bind(this)}/>
                     </div>
                 </form>
                 <div className="redirect">

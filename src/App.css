@@ -96,3 +96,18 @@ div.sent, div.received {
     text-align: center;
     border-top: 1px white solid;
 }
+
+input[type='button'][name='createNewGame'], input[type='button'][name='joinGame'] {
+    width: 15%;
+    height: 50px;
+    margin: auto;
+}
+
+div#gameButtonHolder {
+    display: flex;
+    align-content: center;
+}
+
+div#newGameDialog, div#joinGameDialog {
+    width: 55%;
+}
