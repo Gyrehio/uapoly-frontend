@@ -47,6 +47,7 @@ label.signup, label.signin {
 }
 
 div.userheader h1 {
+    align-content: center;
     text-align: center;
     background-color: rgb(47, 126, 190);
     color: white;
@@ -110,4 +111,10 @@ div#gameButtonHolder {
 
 div#newGameDialog, div#joinGameDialog {
     width: 55%;
+}
+
+input[name="disconnect"] {
+    position: absolute;
+    margin-left: 1850px;
+    margin-top: -73px;
 }
