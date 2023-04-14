@@ -115,6 +115,6 @@ div#newGameDialog, div#joinGameDialog {
 
 input[name="disconnect"] {
     position: absolute;
-    margin-left: 1850px;
-    margin-top: -73px;
+    top: 50px;
+    right: 10px;
 }
