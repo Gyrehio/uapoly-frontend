@@ -26,28 +26,32 @@ class SignUp extends Component<SignUpProps, SignUpState> {
 
     render() {
         return (
-            <div className="signin">
+            <div className="signup">
+                <div className="template">
+                <h1>Welcome to UAPoly</h1>
+                <img src={require("../images/UAPoly.png")} alt={"Logo UAPoly"}/>
+            </div>
                 {this.state.redirectUrl &&
                     <Navigate to={this.state.redirectUrl} replace={true}/>
                 }
                 <form name="signup">
                     <div>
-                        <label htmlFor="login" className="signup">Login :&nbsp;</label>
+                        <label htmlFor="login" className="signup">Login</label>
                         <input type="text" name="login" onChange={this.handleChangeLogin.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div>
-                        <label htmlFor="email" className="signup">Email :&nbsp;</label>
+                        <label htmlFor="email" className="signup">Email</label>
                         <input type="text" name="email" onChange={this.handleChangeEmail.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div>
-                        <label htmlFor="password" className="signup">Password :&nbsp;</label>
+                        <label htmlFor="password" className="signup">Password</label>
                         <input type="password" name="password" onChange={this.handleChangePassword.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div>
-                        <label htmlFor="confirmPassword" className="signup">Confirm password :&nbsp;</label>
+                        <label htmlFor="confirmPassword" className="signup">Confirm password</label>
                         <input type="password" name="confirmPassword" onChange={this.handleChangeConfirm.bind(this)} required={true}/>
                     </div>
                     <br/>
@@ -161,7 +165,7 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                             email: this.state.email,
                             password: this.state.password,
                             confirmPassword: this.state.confirmPassword,
-                            redirectUrl: "/user"
+                            redirectUrl: "/home"
                         });
                     }
                 }

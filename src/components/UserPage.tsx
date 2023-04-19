@@ -8,7 +8,6 @@ const UserPage=()=> {
     return(
         <div className="userpage">
             <UserHeader />
-            <UserDisplay />
             <GameButtons />
         </div> 
     );

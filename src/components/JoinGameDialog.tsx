@@ -1,10 +1,18 @@
-import React, {Component} from "react"
+import React, {Component} from "react";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 type JoinGameDialogProps = {};
 
 type JoinGameDialogState = {
     gameId: number,
-    password: string
+    password: string,
+    open: boolean
 };
 
 class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState> {
@@ -13,21 +21,40 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
 
         this.state = {
             gameId: 0,
-            password: ""
-        }
+            password: "",
+            open: false
+        };
+    }
+
+    handleOpen() {
+        this.setState({
+            gameId: this.state.gameId,
+            password: this.state.password,
+            open: true
+        });
+    }
+
+    handleClose() {
+        this.setState({
+            gameId: this.state.gameId,
+            password: this.state.password,
+            open: false
+        });
     }
 
     handleId(e) {
         this.setState({
             gameId: e.target.value,
-            password: this.state.password
+            password: this.state.password,
+            open: this.state.open
         });
     }
 
     handlePassword(e) {
         this.setState({
             gameId: this.state.gameId,
-            password: e.target.value
+            password: e.target.value,
+            open: this.state.open
         });
     }
 
@@ -52,13 +79,14 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
 
             if (user) {
                 if (user["message"] != null) {
-                    alert(user["message"]);
                     this.setState({
                         gameId: 0,
-                        password: ""
+                        password: "",
+                        open: false
                     });
+                    alert(user["message"]);
                 } else {
-                    console.log("Game is joined !");
+                    alert("Game is joined !");
                 }
             }
         };
@@ -68,22 +96,44 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
 
     render(): React.ReactNode {
         return(
-            <div id="joinGameDialog">
-                <form name="joinGameDialog">
-                    <div>
-                        <label htmlFor="gameId">Game ID :&nbsp;</label>
-                        <input type="number" min={1} onChange={this.handleId.bind(this)} value={this.state.gameId} name="gameId" required={true} />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password :&nbsp;</label>
-                        <input type="password" onChange={this.handlePassword.bind(this)} name="password" />
-                    </div>
-                    <div className="buttonHolder">
-                        <input type="submit" name="button" value={"Confirm"} onClick={this.handleClick.bind(this)}/>
-                    </div>
-                </form>
-            </div>
-        );
+            <div>
+                <Button variant="outlined" onClick={this.handleOpen.bind(this)}>
+                  Join a game
+                </Button>
+                <Dialog open={this.state.open} onClose={this.handleClose.bind(this)}>
+                  <DialogTitle>Join a game</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Please enter the game ID and the password of the room, if it exists.
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Game ID"
+                      type="number"
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handleId.bind(this)}
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handlePassword.bind(this)}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={this.handleClose.bind(this)}>Cancel</Button>
+                    <Button onClick={this.handleClick.bind(this)}>Confirm</Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
+            );
     }
 }
 

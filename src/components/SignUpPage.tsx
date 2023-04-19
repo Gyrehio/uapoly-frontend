@@ -5,7 +5,7 @@ import SignUp from './SignUp.tsx';
 const SignUpPage=()=> {
     return (
         <div className='homepage'>
-            <Template />
+            {/*<Template />*/}
             <SignUp />
         </div>
     );

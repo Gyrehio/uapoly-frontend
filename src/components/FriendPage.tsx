@@ -1,38 +1,36 @@
 import React, {Component} from "react";
+import UserHeader from "./UserHeader.tsx";
 
-type UserDisplayProps = {};
+type FriendPageProps = {};
 
-type UserDisplayState = {
+type FriendPageState = {
     login: string,
-    email: string,
     friends: string[],
     received: string[],
-    sent: string[],
-}
+    sent: string[]
+};
 
-class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
+class FriendPage extends Component<FriendPageProps, FriendPageState> {
     constructor(props) {
         super(props);
 
         this.state = {
             login: '',
-            email: '',
             friends: [],
             received: [],
-            sent: [],
-        };
+            sent: []
+        }
 
         this.update();
     }
 
     update() {
-        this.state = {
+        this.setState({
             login: '',
-            email: '',
             friends: [],
             received: [],
             sent: [],
-        };
+        });
 
         const me = fetch('/user/me', {
             method: "GET",
@@ -64,7 +62,6 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             .then(([meJson, friendJson, pendingJson]) => {
                 this.setState({
                     login: meJson.login,
-                    email: meJson.email,
                     friends: friendJson.map((friend) => {
                         if (friend.firstAccountLogin !== meJson.login) {
                             return friend.firstAccountLogin;
@@ -141,20 +138,47 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
     render(): React.ReactNode {
         return(
             <>
-                <div className="displayInfos">
-                    <div className="infoTitle">
-                        <label className="title" htmlFor="title">Your informations</label>
+                <UserHeader />
+                <div className="content">
+                    <div className="list&add">
+                        <div><label>BOUTON DIALOGUE WSH</label></div>
+                        <div className="friendlist">
+                            <label>Your friend list</label>
+                            <div className="friends">
+                            {this.state.friends.map((friend) => (
+                            <>
+                                <div className="friends">{friend}</div>
+                                <input type="button" name={friend} value={"Remove friend"} onClick={this.clickOnRemoveButton.bind(this)}/>
+                            </>
+                            ))}
+                        </div>
+                        </div>
                     </div>
-                    <div>
-                        <label className="infos" htmlFor="loginLabel">Login : {this.state.login}</label>
-                    </div>
-                    <div>
-                        <label className="infos" htmlFor="emailLabel">Email : {this.state.email}</label>
+                    <div className="pending">
+                        <div className="receivedRequests">
+                            <label>Received requests</label>
+                            {this.state.received.map((friend) => (
+                            <>
+                                <div className="friend">{friend}</div>
+                                <input type="button" name={friend} value={"Accept the invitation"} onClick={this.clickOnAddButton.bind(this)}/>
+                                <input type="button" name={friend} value={"Refuse the invitation"} onClick={this.clickOnRemoveButton.bind(this)}/>
+                            </>
+                            ))}
+                        </div>
+                        <div className="sentRequests">
+                            <label>Sent requests</label>
+                            {this.state.sent.map((friend) => (
+                            <>
+                                <div className="friend">{friend}</div>
+                                <input type="button" name={friend} value={"Don't invite anymore"} onClick={this.clickOnRemoveButton.bind(this)}/>
+                            </>
+                            ))}
+                        </div>
                     </div>
                 </div>
-                <div className="displayInfos">
+                {/*<div className="displayInfos">
                     <div className="infoTitle">
-                        <label className="title" htmlFor="title">Your friendlist</label>
+                        <label className="title" htmlFor="title">Your friend list</label>
                     </div>
                     <div className="friend">
                         {this.state.friends.map((friend) => (
@@ -197,11 +221,10 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
                         <input type="text" name="addFriendLogin" /><br/>
                         <input type="button" name="addFriend" value={"Add friend"}  onClick={this.clickOnAddWriting.bind(this)} /><br/>
                     </div>
-                </div>
+                        </div>*/}
             </>
-            
         );
     }   
 }
 
-export default UserDisplay;
+export default FriendPage;

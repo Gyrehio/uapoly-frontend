@@ -23,18 +23,22 @@ class SignIn extends Component<UserPageProps, UserPageState> {
     render(): React.ReactNode {
         return (
             <div className="signin">
+                <div className="template">
+                <h1>Welcome to UAPoly</h1>
+                <img src={require("../images/UAPoly.png")} alt={"Logo UAPoly"}/>
+            </div>
                 {this.state.redirectUrl &&
                     <Navigate to={this.state.redirectUrl} replace={true}/>
                 }
 
                 <form name="signin">
                     <div>
-                        <label htmlFor="login" className="signin">Login :&nbsp;</label>
+                        <label htmlFor="login" className="signin">Login</label>
                         <input type="text" name="login" required={true} onChange={this.handleChangeLogin.bind(this)} value={this.state.login}/>
                     </div>
                     <br/>
                     <div>
-                        <label htmlFor="password" className="signin">Password :&nbsp;</label>
+                        <label htmlFor="password" className="signin">Password</label>
                         <input type="password" name="password" required={true} onChange={this.handleChangePassword.bind(this)} value={this.state.password} />
                     </div>
                     <br/>
@@ -57,7 +61,6 @@ class SignIn extends Component<UserPageProps, UserPageState> {
             "login": this.state.login,
             "password": this.state.password
         });
-        console.log(obj);
 
         const loader = async () => {
             const user = await (await fetch('/user/login', {
@@ -82,7 +85,7 @@ class SignIn extends Component<UserPageProps, UserPageState> {
                     this.setState({
                         login: this.state.login,
                         password: this.state.password,
-                        redirectUrl: "/user",
+                        redirectUrl: "/home",
                     });
                 }
             }

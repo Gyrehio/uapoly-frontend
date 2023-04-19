@@ -1,4 +1,24 @@
-import React, {Component} from "react"
+import React, {Component} from "react";
+import Button from '@mui/material/Button';
+
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+
+
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 type NewGameDialogProps = {}
 
@@ -8,7 +28,9 @@ type NewGameDialogState = {
     initialMoney: number,
     friendsOnly: boolean,
     password: string,
-    locale: string
+    locale: string,
+    name: string,
+    open: boolean
 }
 
 class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
@@ -21,8 +43,36 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             initialMoney: 2500,
             friendsOnly: false,
             password: "",
-            locale: "en-US"
+            locale: "en-US",
+            name: "",
+            open: false
         }
+    }
+
+    handleOpen() {
+        this.setState({
+            maxPlayers: this.state.maxPlayers,
+            salary: this.state.salary,
+            initialMoney: this.state.initialMoney,
+            friendsOnly: this.state.friendsOnly,
+            password: this.state.password,
+            locale: this.state.locale,
+            name: this.state.name,
+            open: true
+        });
+    }
+
+    handleClose() {
+        this.setState({
+            maxPlayers: this.state.maxPlayers,
+            salary: this.state.salary,
+            initialMoney: this.state.initialMoney,
+            friendsOnly: this.state.friendsOnly,
+            password: this.state.password,
+            locale: this.state.locale,
+            name: this.state.name,
+            open: false
+        });
     }
 
     handlePlayers(e) {
@@ -32,7 +82,9 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             initialMoney: this.state.initialMoney,
             friendsOnly: this.state.friendsOnly,
             password: this.state.password,
-            locale: this.state.locale
+            locale: this.state.locale,
+            name: this.state.name,
+            open: this.state.open
         });
     }
 
@@ -43,7 +95,9 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             initialMoney: this.state.initialMoney,
             friendsOnly: this.state.friendsOnly,
             password: this.state.password,
-            locale: this.state.locale
+            locale: this.state.locale,
+            name: this.state.name,
+            open: this.state.open
         });
     }
 
@@ -54,7 +108,9 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             initialMoney: e.target.value,
             friendsOnly: this.state.friendsOnly,
             password: this.state.password,
-            locale: this.state.locale
+            locale: this.state.locale,
+            name: this.state.name,
+            open: this.state.open
         });
     }
 
@@ -66,7 +122,9 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                 initialMoney: this.state.initialMoney,
                 friendsOnly: true,
                 password: this.state.password,
-                locale: this.state.locale
+                locale: this.state.locale,
+                name: this.state.name,
+                open: this.state.open
             });
         } else {
             this.setState({
@@ -75,7 +133,9 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                 initialMoney: this.state.initialMoney,
                 friendsOnly: false,
                 password: this.state.password,
-                locale: this.state.locale
+                locale: this.state.locale,
+                name: this.state.name,
+                open: this.state.open
             });
         }
     }
@@ -87,7 +147,9 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             initialMoney: this.state.initialMoney,
             friendsOnly: this.state.friendsOnly,
             password: e.target.value,
-            locale: this.state.locale
+            locale: this.state.locale,
+            name: this.state.name,
+            open: this.state.open
         });
     }
 
@@ -98,9 +160,23 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             initialMoney: this.state.initialMoney,
             friendsOnly: this.state.friendsOnly,
             password: this.state.password,
-            locale: e.target.value
+            locale: e.target.value,
+            name: this.state.name,
+            open: this.state.open
         });
-        console.log(this.state);
+    }
+
+    handleName(e) {
+        this.setState({
+            maxPlayers: this.state.maxPlayers,
+            salary: this.state.salary,
+            initialMoney: this.state.initialMoney,
+            friendsOnly: this.state.friendsOnly,
+            password: this.state.password,
+            locale: this.state.locale,
+            name: e.target.value,
+            open: this.state.open
+        });
     }
 
     handleClick(e) {
@@ -112,8 +188,10 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
             "initialMoney": this.state.initialMoney,
             "friendsOnly": this.state.friendsOnly,
             "password": this.state.password,
-            "locale": this.state.locale
+            "locale": this.state.locale,
+            "name": this.state.name
         });
+
         console.log(obj);
 
         const loader = async () => {
@@ -128,17 +206,18 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
 
             if (user) {
                 if (user["message"] != null) {
-                    alert(user["message"]);
                     this.setState({
                         maxPlayers: 2,
                         salary: 500,
                         initialMoney: 2500,
                         friendsOnly: false,
                         password: "",
-                        locale: "en-US"
+                        locale: "en-US",
+                        open: false
                     });
+                    alert(user["message"]);
                 } else {
-                    console.log("Game is created !");
+                    alert("Game is created !");
                 }
             }
         };
@@ -148,43 +227,101 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
 
     render(): React.ReactNode {
         return(
-            <div id="newGameDialog">
-                <form name="newGameDialog">
-                    <div>
-                        <label htmlFor="password">Board language :&nbsp;</label>
-                        <select onChange={this.handleLocale.bind(this)} name="locale">
-                            <option value="en-US">American Board</option>
-                            <option value="fr-FR">Plateau français</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="maxPlayers">Maximum players :&nbsp;</label>
-                        <input type="number" min={2} max={2147483647} onChange={this.handlePlayers.bind(this)} value={this.state.maxPlayers} name="maxPlayers" required={true} />
-                    </div>
-                    <div>
-                        <label htmlFor="salary">Salary :&nbsp;</label>
-                        <input type="number" onChange={this.handleSalary.bind(this)} value={this.state.salary} name="salary" required={true} />
-                    </div>
-                    <div>
-                        <label htmlFor="initialMoney">Initial money :&nbsp;</label>
-                        <input type="number" min={1} onChange={this.handleInitial.bind(this)} value={this.state.initialMoney} name="initialMoney" required={true} />
-                    </div>
-                    <div>
-                        <label htmlFor="onlyFriends">Only friends ?&nbsp;</label><br/>
-                        <input type="radio" name="onlyFriends" onChange={this.handleFriends.bind(this)} value={"true"} required={true} />
-                        <label>Yes</label>
-                        <input type="radio" name="onlyFriends" onChange={this.handleFriends.bind(this)} checked={true} value={"false"} required={true} />
-                        <label>No</label>
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password :&nbsp;</label>
-                        <input type="password" onChange={this.handlePassword.bind(this)} name="password" />
-                    </div>
-                    <div className="buttonHolder">
-                        <input type="submit" name="button" value={"Confirm"} onClick={this.handleClick.bind(this)}/>
-                    </div>
-                </form>
-            </div>
+            <div>
+                <Button variant="outlined" onClick={this.handleOpen.bind(this)}>
+                  Create a game
+                </Button>
+                <Dialog open={this.state.open} onClose={this.handleClose.bind(this)}>
+                  <DialogTitle>Create a game</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Please enter all the informations required to create your game (password is optionnal).
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Name of the room"
+                      type="text"
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handleName.bind(this)}
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Number of players"
+                      type="number"
+                      defaultValue={2}
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handlePlayers.bind(this)}
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Salary"
+                      type="number"
+                      defaultValue={500}
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handleSalary.bind(this)}
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Initial money"
+                      type="number"
+                      defaultValue={2500}
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handleInitial.bind(this)}
+                    />
+                    <FormControl>
+                      <FormLabel id="demo-radio-buttons-group-label">Only friends ?</FormLabel>
+                      <RadioGroup
+                        row
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="false"
+                        name="radio-buttons-group"
+                      >
+                        <FormControlLabel value="true" control={<Radio />} label="Yes" onChange={this.handleFriends.bind(this)} />
+                        <FormControlLabel value="false" control={<Radio />} label="No" onChange={this.handleFriends.bind(this)} />
+                      </RadioGroup>
+                    </FormControl>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handlePassword.bind(this)}
+                    />
+                    <FormControl fullWidth>
+                      <InputLabel id="select-label">Board Language</InputLabel>
+                      <Select
+                        labelId="select-label"
+                        id="select"
+                        label="Board language"
+                        defaultValue={"en-US"}
+                        onChange={this.handleLocale.bind(this)}
+                      >
+                        <MenuItem value={"en-US"}>American Board</MenuItem>
+                        <MenuItem value={"fr-FR"}>Plateau français</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={this.handleClose.bind(this)}>Cancel</Button>
+                    <Button onClick={this.handleClick.bind(this)}>Confirm</Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
         );
     }
 }
