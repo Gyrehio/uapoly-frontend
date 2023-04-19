@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import UserHeader from "./UserHeader.tsx";
+import FriendDialog from "./FriendDialog.tsx";
 
 type FriendPageProps = {};
 
@@ -116,61 +117,46 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
         .then(() => this.update());
     }
 
-    clickOnAddWriting(e) {
-        e.preventDefault();
-        const login = document.querySelector('input[type="text"]')?.value;
-        const obj = JSON.stringify({
-            "login": login
-        });
-
-        const action = fetch('/friend/add', {
-            method: "POST",
-            body: obj,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer ".concat(localStorage.token)
-            }
-        })
-        .then((response) => response.json())
-        .then(() => this.update());
-    }
-
     render(): React.ReactNode {
         return(
             <>
                 <UserHeader />
                 <div className="content">
                     <div className="list&add">
-                        <div><label>BOUTON DIALOGUE WSH</label></div>
+                        <div><FriendDialog /></div>
                         <div className="friendlist">
-                            <label>Your friend list</label>
-                            <div className="friends">
+                            <label className="title">Your friend list</label>
                             {this.state.friends.map((friend) => (
                             <>
-                                <div className="friends">{friend}</div>
-                                <input type="button" name={friend} value={"Remove friend"} onClick={this.clickOnRemoveButton.bind(this)}/>
+                                <div className="friends">
+                                    <label>{friend}</label>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png"/>
+                                </div>
                             </>
                             ))}
-                        </div>
                         </div>
                     </div>
                     <div className="pending">
                         <div className="receivedRequests">
-                            <label>Received requests</label>
+                            <label className="title">Received requests</label>
                             {this.state.received.map((friend) => (
                             <>
-                                <div className="friend">{friend}</div>
-                                <input type="button" name={friend} value={"Accept the invitation"} onClick={this.clickOnAddButton.bind(this)}/>
-                                <input type="button" name={friend} value={"Refuse the invitation"} onClick={this.clickOnRemoveButton.bind(this)}/>
+                                <div className="friends">
+                                    <label>{friend}</label>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnAddButton.bind(this)} src="/green-tick.png"/>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png"/>
+                                </div>
                             </>
                             ))}
                         </div>
                         <div className="sentRequests">
-                            <label>Sent requests</label>
+                            <label className="title">Sent requests</label>
                             {this.state.sent.map((friend) => (
                             <>
-                                <div className="friend">{friend}</div>
-                                <input type="button" name={friend} value={"Don't invite anymore"} onClick={this.clickOnRemoveButton.bind(this)}/>
+                                <div className="friends">
+                                    <label>{friend}</label>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png"/>
+                                </div>
                             </>
                             ))}
                         </div>
@@ -221,7 +207,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                         <input type="text" name="addFriendLogin" /><br/>
                         <input type="button" name="addFriend" value={"Add friend"}  onClick={this.clickOnAddWriting.bind(this)} /><br/>
                     </div>
-                        </div>*/}
+                </div>*/}
             </>
         );
     }   

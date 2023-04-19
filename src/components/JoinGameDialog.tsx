@@ -132,7 +132,7 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
                     <Button onClick={this.handleClick.bind(this)}>Confirm</Button>
                   </DialogActions>
                 </Dialog>
-              </div>
+            </div>
             );
     }
 }
