@@ -76,19 +76,37 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             "login": this.state.friendLogin
         });
 
-        fetch('/friend/add', {
-            method: "POST",
-            body: obj,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer ".concat(localStorage.token)
+        const loader = async () => {
+            const user = await (await fetch('/friend/add', {
+                method: "POST",
+                body: obj,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer ".concat(localStorage.token)
+                }
+            })).json();
+            
+            if (user) {
+                if (user["message"] !== "Friend request sent") {
+                    this.setState({
+                        login: '',
+                        friends: [],
+                        received: [],
+                        sent: [],
+                        friendLogin: '',
+                        open: false
+                    });
+                    this.update();
+                    this.handleClose();
+                    alert(user["message"]);
+                } else {
+                    this.update();
+                    this.handleClose();
+                }
             }
-        })
-        .then((response) => response.json())
-        .then(() => this.update())
-        .then(() => this.handleClose());
+        }
 
-        console.log(this.props);
+        loader();
     }
 
     update() {
