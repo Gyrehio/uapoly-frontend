@@ -184,7 +184,7 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     font-size: 30px;
 }
 
-.friendDialog, .friendlist, .receivedRequests, .sentRequests, .joinDialog, .newDialog {
+.friendDialog, .friendlist, .receivedRequests, .sentRequests, .joinDialog, .newDialog, .selectDialog {
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
