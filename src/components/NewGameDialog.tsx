@@ -14,11 +14,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
-
-import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 type NewGameDialogProps = {}
 
@@ -227,7 +225,7 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
 
     render(): React.ReactNode {
         return(
-            <div>
+            <div className="newDialog">
                 <Button variant="outlined" onClick={this.handleOpen.bind(this)}>
                   Create a game
                 </Button>
@@ -259,7 +257,6 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                       onChange={this.handlePlayers.bind(this)}
                     />
                     <TextField
-                      autoFocus
                       margin="dense"
                       id="name"
                       label="Salary"
@@ -270,7 +267,6 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                       onChange={this.handleSalary.bind(this)}
                     />
                     <TextField
-                      autoFocus
                       margin="dense"
                       id="name"
                       label="Initial money"
@@ -293,7 +289,6 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                       </RadioGroup>
                     </FormControl>
                     <TextField
-                      autoFocus
                       margin="dense"
                       id="name"
                       label="Password"

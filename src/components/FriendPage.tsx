@@ -1,14 +1,23 @@
 import React, {Component} from "react";
 import UserHeader from "./UserHeader.tsx";
-import FriendDialog from "./FriendDialog.tsx";
 
-type FriendPageProps = {};
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+type FriendPageProps = {}
 
 type FriendPageState = {
     login: string,
     friends: string[],
     received: string[],
-    sent: string[]
+    sent: string[],
+    friendLogin: string,
+    open: boolean
 };
 
 class FriendPage extends Component<FriendPageProps, FriendPageState> {
@@ -19,10 +28,67 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             login: '',
             friends: [],
             received: [],
-            sent: []
+            sent: [],
+            friendLogin: '',
+            open: false
         }
 
         this.update();
+    }
+
+    handleOpen() {
+        this.setState({
+            login: this.state.login,
+            friends: this.state.friends,
+            received: this.state.received,
+            sent: this.state.sent,
+            friendLogin: this.state.friendLogin,
+            open: true
+        });
+    }
+
+    handleClose() {
+        this.setState({
+            login: this.state.login,
+            friends: this.state.friends,
+            received: this.state.received,
+            sent: this.state.sent,
+            friendLogin: this.state.friendLogin,
+            open: false
+        });
+    }
+
+    handleLogin(e) {
+        this.setState({
+            login: this.state.login,
+            friends: this.state.friends,
+            received: this.state.received,
+            sent: this.state.sent,
+            friendLogin: e.target.value,
+            open: this.state.open
+        });
+    }
+
+    handleClick(e) {
+        e.preventDefault();
+
+        const obj = JSON.stringify({
+            "login": this.state.friendLogin
+        });
+
+        fetch('/friend/add', {
+            method: "POST",
+            body: obj,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer ".concat(localStorage.token)
+            }
+        })
+        .then((response) => response.json())
+        .then(() => this.update())
+        .then(() => this.handleClose());
+
+        console.log(this.props);
     }
 
     update() {
@@ -31,6 +97,8 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             friends: [],
             received: [],
             sent: [],
+            friendLogin: '',
+            open: this.state.open
         });
 
         const me = fetch('/user/me', {
@@ -85,7 +153,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             "login": login,
         });
 
-        const action = fetch('/friend/remove', {
+        fetch('/friend/remove', {
             method: "POST",
             body: obj,
             headers: {
@@ -105,7 +173,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             "login": login
         });
 
-        const action = fetch('/friend/add', {
+            fetch('/friend/add', {
             method: "POST",
             body: obj,
             headers: {
@@ -123,14 +191,40 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                 <UserHeader />
                 <div className="content">
                     <div className="list&add">
-                        <div><FriendDialog /></div>
+                        <div className="friendDialog">
+                            <Button variant="outlined" onClick={this.handleOpen.bind(this)}>
+                              Add a friend
+                            </Button>
+                            <Dialog open={this.state.open} onClose={this.handleClose.bind(this)}>
+                              <DialogTitle>Search an account</DialogTitle>
+                              <DialogContent>
+                                <DialogContentText>
+                                  Search an account by entering his login to add it to your friend list.
+                                </DialogContentText>
+                                <TextField
+                                  autoFocus
+                                  margin="dense"
+                                  id="name"
+                                  label="Your friend login"
+                                  type="text"
+                                  fullWidth
+                                  variant="standard"
+                                  onChange={this.handleLogin.bind(this)}
+                                />
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={this.handleClose.bind(this)}>Cancel</Button>
+                                <Button onClick={this.handleClick.bind(this)}>Confirm</Button>
+                              </DialogActions>
+                            </Dialog>
+                        </div>
                         <div className="friendlist">
                             <label className="title">Your friend list</label>
                             {this.state.friends.map((friend) => (
                             <>
                                 <div className="friends">
                                     <label>{friend}</label>
-                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png"/>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png" alt={"Remove"} />
                                 </div>
                             </>
                             ))}
@@ -143,8 +237,8 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                             <>
                                 <div className="friends">
                                     <label>{friend}</label>
-                                    <img name={friend} width={15} height={15} onClick={this.clickOnAddButton.bind(this)} src="/green-tick.png"/>
-                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png"/>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnAddButton.bind(this)} src="/green-tick.png" alt={"Accept"} />
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png" alt={"Decline"} />
                                 </div>
                             </>
                             ))}
@@ -155,7 +249,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                             <>
                                 <div className="friends">
                                     <label>{friend}</label>
-                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png"/>
+                                    <img name={friend} width={15} height={15} onClick={this.clickOnRemoveButton.bind(this)} src="/red-tick.png" alt={"Cancel"} />
                                 </div>
                             </>
                             ))}

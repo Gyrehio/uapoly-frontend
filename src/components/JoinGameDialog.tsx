@@ -96,11 +96,11 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
 
     render(): React.ReactNode {
         return(
-            <div>
+            <div className="joinDialog">
                 <Button variant="outlined" onClick={this.handleOpen.bind(this)}>
                   Join a game
                 </Button>
-                <Dialog open={this.state.open} onClose={this.handleClose.bind(this)}>
+                <Dialog open={this.state.open} onClose={this.handleClose.bind(this)} onKeyDown={(e) => {if (e.key === 'Enter') this.handleClose.bind(this);}}>
                   <DialogTitle>Join a game</DialogTitle>
                   <DialogContent>
                     <DialogContentText>

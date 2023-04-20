@@ -170,7 +170,7 @@ div.optionsHolder input[type="button"] {
     margin-right: 15px;
 }
 
-div.content {
+div.content, div#gameButtonHolder {
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -184,7 +184,7 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     font-size: 30px;
 }
 
-.friendlist, .receivedRequests, .sentRequests {
+.friendDialog, .friendlist, .receivedRequests, .sentRequests, .joinDialog, .newDialog {
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
