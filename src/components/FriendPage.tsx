@@ -255,8 +255,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                                 ))}
                               </DialogContent>
                               <DialogActions>
-                                <Button onClick={this.handleClose.bind(this)}>Cancel</Button>
-                                <Button onClick={this.handleClick.bind(this)}>Confirm</Button>
+                                <Button onClick={this.handleClose.bind(this)}>Close</Button>
                               </DialogActions>
                             </Dialog>
                         </div>

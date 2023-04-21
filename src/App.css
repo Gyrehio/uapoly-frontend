@@ -195,12 +195,12 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     padding: 10px;
 }
 
-.friends {
+.friends, .games {
     margin-top: 2px;
     margin-bottom: 2px;
 }
 
-.friends img {
+.friends img, .games img {
     margin-left: 5px;
 }
 

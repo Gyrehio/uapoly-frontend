@@ -10,7 +10,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 type SelectGameDialogProps = {};
 
 type SelectGameDialogState = {
-    name: string,
+    searchValue: string,
+    matchingRooms: object[],
+    password: string,
     open: boolean
 };
 
@@ -19,36 +21,109 @@ class SelectGameDialog extends Component<SelectGameDialogProps, SelectGameDialog
         super(props);
 
         this.state = {
-            name: "",
+            searchValue: "",
+            matchingRooms: [],
+            password: "",
             open: false
         };
+
+        this.timeoutId = null;
+    }
+
+    update() {
+        this.setState({
+            searchValue: ""
+        })
     }
 
     handleOpen() {
         this.setState({
-            name: this.state.name,
             open: true
         });
     }
 
     handleClose() {
         this.setState({
-            name: this.state.name,
             open: false
         });
     }
 
     handleName(e) {
         this.setState({
-            name: e.target.value,
-            open: this.state.open
+            searchValue: e.target.value
         });
+
+        clearTimeout(this.timeoutId);
+        this.timeoutId = setTimeout(() => {
+            this.setState({matchingRooms: []});
+            console.log(this.state.searchValue);
+            const obj = JSON.stringify({
+                "name": this.state.searchValue,
+                "page": 1
+            });
+
+            fetch('/game/search', {
+                method: "POST",
+                body: obj,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer ".concat(localStorage.token)
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => data.map((game) => {
+                this.state.matchingRooms.push({"gameId": game.id, "name": game.name});
+            }))
+            .then(() => this.update());
+        }, 500);
+    }
+
+    handlePassword(e) {
+        this.setState({
+            password: e.target.value
+        })
     }
 
     handleClick(e) {
         e.preventDefault();
 
         this.handleClose();
+    }
+
+    joinGame(e) {
+        e.preventDefault();
+        const gameId = e.target.id;
+        const pswd = this.state.password;
+
+        const obj  = JSON.stringify({
+            "gameId": gameId,
+            "password": pswd
+        });
+
+        const loader = async () => {
+            const game = await (await fetch('/game/join', {
+                method: "POST",
+                body: obj,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer ".concat(localStorage.token)
+                }
+            })).json();
+            
+            if (game) {
+                this.setState({
+                    searchValue: "",
+                    matchingRooms: [],
+                    password: "",
+                    open: false
+                });
+                this.update();
+                this.handleClose();
+                alert(game["message"]);
+            }
+        }
+
+        loader();
     }
 
     render(): React.ReactNode {
@@ -73,6 +148,24 @@ class SelectGameDialog extends Component<SelectGameDialogProps, SelectGameDialog
                       variant="standard"
                       onChange={this.handleName.bind(this)}
                     />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handlePassword.bind(this)}
+                    />
+                    {this.state.matchingRooms.map((game) => (
+                    <>
+                        <div className="games">
+                            <label>{game["name"]}</label>
+                            <img name={game["name"]} id={game["gameId"]} width={15} height={15} onClick={this.joinGame.bind(this)} src="/green-tick.png" alt={"Join"} />
+                        </div>
+                    </>
+                    ))}
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={this.handleClose.bind(this)}>Cancel</Button>
