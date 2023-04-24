@@ -180,6 +180,11 @@ div.content, div#gameButtonHolder {
     color: rgb(47, 126, 190);
 }
 
+.empty {
+    color: black;
+    font-size: 15px;
+}
+
 div.friendlist label.title, div.receivedRequests label.title, div.sentRequests label.title {
     font-size: 30px;
 }

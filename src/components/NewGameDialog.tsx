@@ -236,6 +236,19 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                     <DialogContentText>
                       Please enter all the informations required to create your game (password is optionnal).
                     </DialogContentText>
+                    <br/>
+                    <FormControl fullWidth>
+                      <InputLabel id="select-label">Board Language</InputLabel>
+                      <Select
+                        labelId="select-label"
+                        id="select"
+                        label="Board language"
+                        onChange={this.handleLocale.bind(this)}
+                      >
+                        <MenuItem value={"en-US"}>American Board</MenuItem>
+                        <MenuItem value={"fr-FR"}>Plateau français</MenuItem>
+                      </Select>
+                    </FormControl>
                     <TextField
                       autoFocus
                       margin="dense"
@@ -277,6 +290,15 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                       variant="standard"
                       onChange={this.handleInitial.bind(this)}
                     />
+                    <TextField
+                      margin="dense"
+                      id="name"
+                      label="Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={this.handlePassword.bind(this)}
+                    />
                     <FormControl>
                       <FormLabel id="demo-radio-buttons-group-label">Only friends ?</FormLabel>
                       <RadioGroup
@@ -288,28 +310,6 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                         <FormControlLabel value="true" control={<Radio />} label="Yes" onChange={this.handleFriends.bind(this)} />
                         <FormControlLabel value="false" control={<Radio />} label="No" onChange={this.handleFriends.bind(this)} />
                       </RadioGroup>
-                    </FormControl>
-                    <TextField
-                      margin="dense"
-                      id="name"
-                      label="Password"
-                      type="password"
-                      fullWidth
-                      variant="standard"
-                      onChange={this.handlePassword.bind(this)}
-                    />
-                    <FormControl fullWidth>
-                      <InputLabel id="select-label">Board Language</InputLabel>
-                      <Select
-                        labelId="select-label"
-                        id="select"
-                        label="Board language"
-                        defaultValue={"en-US"}
-                        onChange={this.handleLocale.bind(this)}
-                      >
-                        <MenuItem value={"en-US"}>American Board</MenuItem>
-                        <MenuItem value={"fr-FR"}>Plateau français</MenuItem>
-                      </Select>
                     </FormControl>
                   </DialogContent>
                   <DialogActions>
