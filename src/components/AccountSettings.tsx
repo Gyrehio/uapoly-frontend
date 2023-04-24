@@ -5,7 +5,10 @@ type AccountSettingsProps = {};
 
 type AccountSettingsState = {
     login: string,
-    email: string
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+    confirm: string
 };
 
 class AccountSettings extends Component<AccountSettingsProps, AccountSettingsState> {
@@ -14,18 +17,73 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
 
         this.state = {
             login: "",
-            email: ""
+            email: "",
+            oldPassword: "",
+            newPassword: "",
+            confirm: ""
         };
 
         this.update();
     }
 
-    update() {
+    handleOldPassword(e) {
         this.setState({
-            login: "",
-            email: ""
+            oldPassword: e.target.value
         });
+    }
 
+    handleNewPassword(e) {
+        this.setState({
+            newPassword: e.target.value
+        });
+    }
+
+    handleConfirmPassword(e) {
+        this.setState({
+            confirm: e.target.value
+        });
+    }
+
+    handleClick(e) {
+        e.preventDefault();
+
+        if (this.state.newPassword !== this.state.confirm) {
+            this.setState({
+                newPassword: "",
+                confirm: ""
+            });
+            alert("Please make sure the new password and the confirm password are the same.");
+        } else {
+            const obj = JSON.stringify({
+                "oldPassword": this.state.oldPassword,
+                "newPassword": this.state.newPassword
+            });
+
+            const loader = async () => {
+                const user = await (await fetch('/user/change-password', {
+                    method: "POST",
+                    body: obj,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer ".concat(localStorage.token)
+                    }
+                })).json();
+    
+                if (user) {
+                    this.setState({
+                        oldPassword: "",
+                        newPassword: "",
+                        confirm: ""
+                    });
+                    alert(user["message"]);
+                }
+            };
+            
+            loader();
+        }
+    }
+
+    update() {
         fetch('/user/me', {
             method: "GET",
             headers: {
@@ -63,21 +121,21 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
                         <br/>
                         <div>
                             <label>Actual password</label><br/>
-                            <input type="password" className="passwordForm" name="actualPswd" required onChange={() => console.log("Ok")} />
+                            <input type="password" className="passwordForm" name="actualPswd" required onChange={this.handleOldPassword.bind(this)} value={this.state.oldPassword} />
                         </div>
                         <br/>
                         <div>
                             <label>New password</label><br/>
-                            <input type="password" className="passwordForm" name="newPswd" required onChange={() => console.log("Ok")} />
+                            <input type="password" className="passwordForm" name="newPswd" required onChange={this.handleNewPassword.bind(this)} value={this.state.newPassword} />
                         </div>
                         <br/>
                         <div>
                             <label>Confirm password</label>
-                            <input type="password" className="passwordForm" name="confirmPswd" required onChange={() => console.log("Ok")} />
+                            <input type="password" className="passwordForm" name="confirmPswd" required onChange={this.handleConfirmPassword.bind(this)} value={this.state.confirm} />
                         </div>
                         <br/>
                         <div>
-                            <input type="button" name="button" value={"Confirm"} />
+                            <input type="button" name="button" value={"Confirm"} onClick={this.handleClick.bind(this)} />
                         </div>
                     </form>
                 </div>
