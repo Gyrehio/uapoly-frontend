@@ -55,6 +55,32 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
                         <label className="infos" htmlFor="emailLabel">Email : {this.state.email}</label>
                     </div>
                 </div>
+                <div className="passwordForm">
+                    <form name="changePassword">
+                        <div>
+                            <label>Change your password</label>
+                        </div>
+                        <br/>
+                        <div>
+                            <label>Actual password</label><br/>
+                            <input type="password" className="passwordForm" name="actualPswd" required onChange={() => console.log("Ok")} />
+                        </div>
+                        <br/>
+                        <div>
+                            <label>New password</label><br/>
+                            <input type="password" className="passwordForm" name="newPswd" required onChange={() => console.log("Ok")} />
+                        </div>
+                        <br/>
+                        <div>
+                            <label>Confirm password</label>
+                            <input type="password" className="passwordForm" name="confirmPswd" required onChange={() => console.log("Ok")} />
+                        </div>
+                        <br/>
+                        <div>
+                            <input type="button" name="button" value={"Confirm"} />
+                        </div>
+                    </form>
+                </div>
             </>
             
         );
