@@ -125,15 +125,6 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
     }
 
     update() {
-        /*this.setState({
-            login: '',
-            friends: [],
-            received: [],
-            sent: [],
-            searchValue: '',
-            open: this.state.open
-        });*/
-
         const me = fetch('/user/me', {
             method: "GET",
             headers: {
