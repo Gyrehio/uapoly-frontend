@@ -243,6 +243,7 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                         labelId="select-label"
                         id="select"
                         label="Board language"
+                        defaultValue="en-US"
                         onChange={this.handleLocale.bind(this)}
                       >
                         <MenuItem value={"en-US"}>American Board</MenuItem>

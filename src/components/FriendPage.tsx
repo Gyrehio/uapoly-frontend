@@ -252,9 +252,6 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                         </div>
                         <div className="friendlist">
                             <label className="title">Your friend list</label>
-                            {this.state.friends.length === 0 &&
-                                <label className="empty"><i>You don't have any friend yet. Try to add someone with the "Add a friend" button !</i></label>
-                            }
                             {this.state.friends.map((friend) => (
                             <>
                                 <div className="friends">
@@ -263,14 +260,14 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                                 </div>
                             </>
                             ))}
+                            {this.state.friends.length === 0 &&
+                                <label className="empty"><i>You don't have any friend yet. Try to add someone with the "Add a friend" button !</i></label>
+                            }
                         </div>
                     </div>
                     <div className="pending">
                         <div className="receivedRequests">
                             <label className="title">Received requests</label>
-                            {this.state.received.length === 0 &&
-                                <label className="empty"><i>You don't have any received friend request for the moment.</i></label>
-                            }
                             {this.state.received.map((friend) => (
                             <>
                                 <div className="friends">
@@ -280,12 +277,12 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                                 </div>
                             </>
                             ))}
+                            {this.state.received.length === 0 &&
+                                <label className="empty"><i>You don't have any received friend request for the moment.</i></label>
+                            }
                         </div>
                         <div className="sentRequests">
                             <label className="title">Sent requests</label>
-                            {this.state.sent.length === 0 &&
-                                <label className="empty"><i>You didn't send any friend request for the moment. Try to use the "Add a friend" button to send one !</i></label>
-                            }
                             {this.state.sent.map((friend) => (
                             <>
                                 <div className="friends">
@@ -294,6 +291,9 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                                 </div>
                             </>
                             ))}
+                            {this.state.sent.length === 0 &&
+                                <label className="empty"><i>You didn't send any friend request for the moment. Try to use the "Add a friend" button to send one !</i></label>
+                            }
                         </div>
                     </div>
                 </div>

@@ -183,6 +183,9 @@ div.content, div#gameButtonHolder {
 .empty {
     color: black;
     font-size: 15px;
+    text-align: center;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 div.friendlist label.title, div.receivedRequests label.title, div.sentRequests label.title {
