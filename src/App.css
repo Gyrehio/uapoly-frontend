@@ -106,10 +106,14 @@ div form {
     margin-top: 30px;
 }
 
-label.signup, label.signin, label.passwordForm {
+label.signup, label.signin {
     display: inline-block;
     width: 75%;
     text-align: center;
+}
+
+.passwordForm, .emailForm {
+    color: black;
 }
 
 .redirect {
@@ -125,7 +129,7 @@ label.signup, label.signin, label.passwordForm {
     text-align: center;
 }
 
-div.signin, div.signup, div.passwordForm {
+div.signin, div.signup {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -170,7 +174,7 @@ div.optionsHolder input[type="button"] {
     margin-right: 15px;
 }
 
-div.content, div#gameButtonHolder {
+div.content, div#gameButtonHolder, div.changeForms {
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -277,8 +281,10 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
         margin-left: 0px;
     }
 
-    div.content {
+    div.content, div.changeForms {
         flex-direction: column;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 }
 
