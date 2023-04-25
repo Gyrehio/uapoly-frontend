@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import UserHeader from "./UserHeader.tsx";
+import Footer from "./Footer.tsx";
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -297,52 +298,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                         </div>
                     </div>
                 </div>
-                {/*<div className="displayInfos">
-                    <div className="infoTitle">
-                        <label className="title" htmlFor="title">Your friend list</label>
-                    </div>
-                    <div className="friend">
-                        {this.state.friends.map((friend) => (
-                        <>
-                            <div className="friend">{friend}</div>
-                            <input type="button" name={friend} value={"Remove friend"} onClick={this.clickOnRemoveButton.bind(this)}/>
-                        </>
-                        ))}
-                    </div>
-                </div>
-                <div className="displayInfos">
-                    <div className="infoTitle">
-                        <label className="title" htmlFor="title">Your friend requests</label>
-                    </div>
-
-                    <div className="received">
-                        <label className="receivedInvites" htmlFor="receivedInvites">Received</label>
-                        {this.state.received.map((friend) => (
-                        <>
-                            <div className="friend">{friend}</div>
-                            <input type="button" name={friend} value={"Accept the invitation"} onClick={this.clickOnAddButton.bind(this)}/>
-                            <input type="button" name={friend} value={"Refuse the invitation"} onClick={this.clickOnRemoveButton.bind(this)}/>
-                        </>
-                        ))}
-                        
-                    </div>
-                    <div className="sent">
-                        <label className="sentInvites" htmlFor="sentInvites">Sent</label>
-                        {this.state.sent.map((friend) => (
-                        <>
-                            <div className="friend">{friend}</div>
-                            <input type="button" name={friend} value={"Don't invite anymore"} onClick={this.clickOnRemoveButton.bind(this)}/>
-                        </>
-                        ))}
-                    </div>
-                </div>
-                <div className="displayInfos">
-                    <div className="infoTitle">
-                        <label className="title" htmlFor="title">Add a friend</label>
-                        <input type="text" name="addsearchValue" /><br/>
-                        <input type="button" name="addFriend" value={"Add friend"}  onClick={this.clickOnAddWriting.bind(this)} /><br/>
-                    </div>
-                </div>*/}
+                <Footer />
             </>
         );
     }   

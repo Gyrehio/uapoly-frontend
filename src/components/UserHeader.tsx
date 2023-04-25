@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link, Navigate, redirect} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 
 type UserHeaderProps = {};
 

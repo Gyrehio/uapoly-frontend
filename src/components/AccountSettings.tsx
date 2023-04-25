@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import UserHeader from "./UserHeader.tsx";
+import Footer from "./Footer.tsx";
 
 type AccountSettingsProps = {};
 
@@ -195,7 +196,7 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
                             </div>
                             <br/>
                             <div>
-                                <label>Confirm password</label>
+                                <label>Confirm password</label><br/>
                                 <input type="password" className="passwordForm" name="confirmPswd" required onChange={this.handleConfirmPassword.bind(this)} value={this.state.confirmPswd} />
                             </div>
                             <br/>
@@ -221,7 +222,7 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
                             </div>
                             <br/>
                             <div>
-                                <label>Password</label>
+                                <label>Password</label><br/>
                                 <input type="password" className="emailForm" name="pswd" required onChange={this.handlePassword.bind(this)} value={this.state.pswdMail} />
                             </div>
                             <br/>
@@ -231,6 +232,7 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
                         </form>
                     </div>
                 </div>
+                <Footer />
             </>
             
         );
