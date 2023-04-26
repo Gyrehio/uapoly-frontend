@@ -231,6 +231,66 @@ td.void {
     border: none;
 }
 
+.start {
+    border: red 1px solid;
+}
+
+.chest {
+    background-color: aqua;
+}
+
+.chance {
+    background-color: lightgreen;
+}
+
+.train {
+    background-color: lightgrey;
+}
+
+.jail {
+    background-color: orange;
+}
+
+.tax {
+    background-color: grey;
+}
+
+.utility {
+    background-color:darkgoldenrod;
+}
+
+.brown {
+    background-color: brown;
+}
+
+.white {
+    background-color: whitesmoke;
+}
+
+.pink {
+    background-color: palevioletred;
+}
+
+.orange {
+    background-color: orangered;
+}
+
+.red {
+    background-color: red;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.green {
+    background-color: green;
+}
+
+.blue {
+    background-color: blue;
+}
+
 #title {
     cursor: pointer;
 }
