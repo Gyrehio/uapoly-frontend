@@ -200,8 +200,35 @@ div.container {
     padding-bottom: 55px;
 }
 
-a:visited {
+a.link {
     color: white;
+}
+
+a.link:visited {
+    color: white;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: 8px;
+}
+
+tr {
+    height: 35px;
+    border: 1px;
+}
+
+td {
+    width: 35px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+}
+
+td.void {
+    border: none;
 }
 
 #title {

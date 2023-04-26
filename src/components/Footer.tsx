@@ -28,8 +28,8 @@ class Footer extends Component<FooterProps, FooterState> {
                 <div className="githubLinks">
                     {this.state.isClicked &&
                         <div>
-                            <a href="https://github.com/ttcchhmm/uapoly-backend" target="_blank" >Backend</a>
-                            <a href="https://github.com/Gyrehio/uapoly-frontend" target="_blank" >Frontend</a>
+                            <a className="link" href="https://github.com/ttcchhmm/uapoly-backend" target="_blank" >Backend</a>
+                            <a className="link" href="https://github.com/Gyrehio/uapoly-frontend" target="_blank" >Frontend</a>
                         </div>
                     }
                     <img src="/Github.svg" alt="Links to the GitHub pages" onClick={this.showLinks.bind(this)} />

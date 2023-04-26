@@ -8,7 +8,7 @@ import UserPage from './components/UserPage.tsx';
 import Loading from './components/Loading.tsx';
 import AccountSettings from './components/AccountSettings.tsx';
 import FriendPage from './components/FriendPage.tsx';
-import Footer from './components/Footer.tsx';
+import GamePage from './components/GamePage.tsx';
 
 const App =()=>{
   return (
@@ -23,6 +23,7 @@ const App =()=>{
               <Route exact path='/test' Component={Loading}/>
               <Route exact path='/user' Component={AccountSettings} />
               <Route exact path='/friends' Component={FriendPage} />
+              <Route exact path='/game' Component={GamePage} />
             </Routes>
           </div>
         </div>
