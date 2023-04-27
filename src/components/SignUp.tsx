@@ -37,22 +37,22 @@ class SignUp extends Component<SignUpProps, SignUpState> {
                 <form name="signup">
                     <div>
                         <label htmlFor="login" className="signup">Login</label>
-                        <input type="text" name="login" onChange={this.handleChangeLogin.bind(this)} required={true}/>
+                        <input type="text" name="login" id="login" onChange={this.handleChangeLogin.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div>
                         <label htmlFor="email" className="signup">Email</label>
-                        <input type="text" name="email" onChange={this.handleChangeEmail.bind(this)} required={true}/>
+                        <input type="text" name="email" id="email" onChange={this.handleChangeEmail.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div>
                         <label htmlFor="password" className="signup">Password</label>
-                        <input type="password" name="password" onChange={this.handleChangePassword.bind(this)} required={true}/>
+                        <input type="password" name="password" id="password" onChange={this.handleChangePassword.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div>
                         <label htmlFor="confirmPassword" className="signup">Confirm password</label>
-                        <input type="password" name="confirmPassword" onChange={this.handleChangeConfirm.bind(this)} required={true}/>
+                        <input type="password" name="confirmPassword" id="confirmPassword" onChange={this.handleChangeConfirm.bind(this)} required={true}/>
                     </div>
                     <br/>
                     <div className="buttonHolder">

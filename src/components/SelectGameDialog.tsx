@@ -158,14 +158,14 @@ class SelectGameDialog extends Component<SelectGameDialogProps, SelectGameDialog
                       variant="standard"
                       onChange={this.handlePassword.bind(this)}
                     />
+                    <div className="games">
                     {this.state.matchingRooms.map((game) => (
                     <>
-                        <div className="games">
-                            <label>{game["name"]}</label>
-                            <img name={game["name"]} id={game["gameId"]} width={15} height={15} onClick={this.joinGame.bind(this)} src="/green-tick.png" alt={"Join"} />
-                        </div>
+                        <span>{game["name"]}</span>
+                        <img name={game["name"]} id={game["gameId"]} width={15} height={15} onClick={this.joinGame.bind(this)} src="/green-tick.png" alt={"Join"} />
                     </>
                     ))}
+                    </div>
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={this.handleClose.bind(this)}>Cancel</Button>

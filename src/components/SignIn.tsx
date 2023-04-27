@@ -34,12 +34,12 @@ class SignIn extends Component<UserPageProps, UserPageState> {
                 <form name="signin">
                     <div>
                         <label htmlFor="login" className="signin">Login</label>
-                        <input type="text" name="login" required={true} onChange={this.handleChangeLogin.bind(this)} value={this.state.login}/>
+                        <input type="text" name="login" id="login" required={true} onChange={this.handleChangeLogin.bind(this)} value={this.state.login}/>
                     </div>
                     <br/>
                     <div>
                         <label htmlFor="password" className="signin">Password</label>
-                        <input type="password" name="password" required={true} onChange={this.handleChangePassword.bind(this)} value={this.state.password} />
+                        <input type="password" name="password" id="password" required={true} onChange={this.handleChangePassword.bind(this)} value={this.state.password} />
                     </div>
                     <br/>
                     <div className="buttonHolder">
