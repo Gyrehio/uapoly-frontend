@@ -46,8 +46,7 @@ class UserPage extends Component<UserPageProps, UserPageState> {
                         <h2>Joined games</h2>
                         {this.state.joinedGames.map((game) => (
                         <>
-                            <span>{game["name"]}</span>
-                            <span>{game["gameId"]}</span>
+                            <span>{game["name"]+" - "+game["gameId"]}</span>
                             <br/>
                         </>
                         ))}
