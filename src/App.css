@@ -235,7 +235,7 @@ td {
     border: none;
 }
 
-.centerImage {
+.imageCenter {
     height: 180px;
     width: 180px;
 }
@@ -243,6 +243,32 @@ td {
 .slotImage {
     width: 60px;
     height: 60px;
+}
+
+.slotDisplay {
+    border: 1px solid black;
+    height: 300px;
+}
+
+.slotInfos {
+}
+
+.slotDisplay td, .slotDisplay tr {
+    border: none;
+    height: auto;
+    width: auto;
+}
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.alignCenter {
+    text-align: center;
 }
 
 .goToJail {
@@ -501,5 +527,14 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     .slotImage {
         width: 30px;
         height: 30px;
+    }
+
+    .slotDisplay {
+        height: 180px;
+        width: 100px;
+    }
+
+    .slotInfos {
+        width: 100px;
     }
 }
