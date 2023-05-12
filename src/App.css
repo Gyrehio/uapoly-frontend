@@ -209,14 +209,9 @@ a.link:visited {
 }
 
 table {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 20px;
-    margin-right: auto;
-    text-align: center;
     font-size: 14px;
+    margin-left: 15px;
+    text-align: center;
 }
 
 tr {
@@ -248,9 +243,6 @@ td {
 .slotDisplay {
     border: 1px solid black;
     height: 300px;
-}
-
-.slotInfos {
 }
 
 .slotDisplay td, .slotDisplay tr {
@@ -360,6 +352,40 @@ div.optionsHolder input[type="button"] {
     margin-right: 15px;
     border: 1px solid rgb(47, 126, 190);
     display: inline;
+}
+
+.game {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.playerInfos {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    display: flex;
+    justify-content: space-around;
+    width: 250px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.playerStats {
+    margin-top: auto;
+    margin-bottom: auto;
+    text-align: center;
+}
+
+.playerList {
+    margin-right: 15px;
+    border: 1px solid black;
+    justify-content: center;
+    height: fit-content;
 }
 
 div.content, div#gameButtonHolder, div.changeForms {
@@ -504,7 +530,7 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
         margin-left: auto;
         margin-right: auto;
         text-align: center;
-        font-size: 8px;
+        font-size: 6px;
     }
     
     tr {
@@ -536,5 +562,15 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
     .slotInfos {
         width: 100px;
+    }
+
+    .game {
+        flex-direction: column;
+    }
+
+    .playerList {
+        width: 100%;
+        border: unset;
+        border-bottom: 1px solid black;
     }
 }

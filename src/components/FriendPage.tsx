@@ -23,6 +23,8 @@ type FriendPageState = {
 };
 
 class FriendPage extends Component<FriendPageProps, FriendPageState> {
+    timeoutId: number | undefined   
+    
     constructor(props) {
         super(props);
 
@@ -36,7 +38,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             open: false
         }
 
-        this.timeoutId = null;
+        this.timeoutId = undefined;
 
         this.update();
     }
@@ -78,7 +80,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                 }
             })
             .then((response) => response.json())
-            .then((data) => data.map((friend) => {
+            .then((data: object[]) => data.map((friend: any) => {
                 this.state.matchingNames.push(friend.login);
             }))
             .then(() => this.update());

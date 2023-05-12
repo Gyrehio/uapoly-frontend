@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 
@@ -23,7 +23,7 @@ const App =()=>{
               <Route exact path='/test' Component={Loading}/>
               <Route exact path='/user' Component={AccountSettings} />
               <Route exact path='/friends' Component={FriendPage} />
-              <Route exact path='/game' Component={GamePage} />
+              <Route exact path='/game/:gameId' Component={GamePage} />
             </Routes>
           </div>
         </div>
