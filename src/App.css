@@ -243,6 +243,11 @@ td {
 .slotDisplay {
     border: 1px solid black;
     height: 300px;
+    font-size: 14px;
+}
+
+.slotInfos {
+    font-size: 14px;
 }
 
 .slotDisplay td, .slotDisplay tr {
@@ -558,10 +563,12 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     .slotDisplay {
         height: 180px;
         width: 100px;
+        font-size: 7px;
     }
 
     .slotInfos {
         width: 100px;
+        font-size: 7px;
     }
 
     .game {

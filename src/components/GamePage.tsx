@@ -9,7 +9,7 @@ type GamePageProps = {};
 type GamePageState = {
     gameId: number,
     slotClicked: boolean,
-    indexClicked: number | null,
+    indexClicked: number,
     slotName: string | null,
     slotType: string | undefined,
     gameInfos: any
@@ -26,7 +26,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         this.state = {
             gameId: parseInt(urlSplit[urlSplit.length - 1]),
             slotClicked: false,
-            indexClicked: null,
+            indexClicked: -1,
             slotName: null,
             slotType: undefined,
             gameInfos: {
@@ -135,13 +135,14 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
                                         <table className="slotInfos">
-                                            <tr><td className="alignLeft">Ø 🏠</td> <td className="alignRight">$4</td></tr>
-                                            <tr><td className="alignLeft">🏠</td> <td className="alignRight">$12</td></tr>
-                                            <tr><td className="alignLeft">🏠🏠</td> <td className="alignRight">$24</td></tr>
-                                            <tr><td className="alignLeft">🏠🏠🏠</td> <td className="alignRight">$40</td></tr>
-                                            <tr><td className="alignLeft">🏠🏠🏠🏠</td> <td className="alignRight">$70</td></tr>
-                                            <tr><td className="alignLeft">🏨</td> <td className="alignRight">$125</td></tr>
-                                            <tr><td className="alignLeft">🏠 / 🏨 price</td><td className="alignRight">$25</td></tr>
+                                            <tr><td className="alignLeft">💵</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].price}</td></tr>
+                                            <tr><td className="alignLeft">Ø 🏠</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].propertyRent["noBuildings"]}</td></tr>
+                                            <tr><td className="alignLeft">🏠</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].propertyRent["oneBuilding"]}</td></tr>
+                                            <tr><td className="alignLeft">🏠🏠</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].propertyRent["twoBuildings"]}</td></tr>
+                                            <tr><td className="alignLeft">🏠🏠🏠</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].propertyRent["threeBuildings"]}</td></tr>
+                                            <tr><td className="alignLeft">🏠🏠🏠🏠</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].propertyRent["fourBuildings"]}</td></tr>
+                                            <tr><td className="alignLeft">🏨</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].propertyRent["hotel"]}</td></tr>
+                                            <tr><td className="alignLeft">🏠 / 🏨 price</td><td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].buildingPrice}</td></tr>
                                         </table>
                                     </div>
                                     }
@@ -149,8 +150,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
                                         <table className="slotInfos">
-                                            <tr><td className="alignLeft">💡</td> <td className="alignRight">$4</td></tr>
-                                            <tr><td className="alignLeft">💡💡</td> <td className="alignRight">$12</td></tr>
+                                            <tr><td className="alignLeft">💵</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].price}</td></tr>
+                                            <tr><td className="alignLeft">💡</td> <td className="alignRight">x{this.state.gameInfos.slots[this.state.indexClicked].utilityRent["oneUtilityMultiplier"]}</td></tr>
+                                            <tr><td className="alignLeft">💡💡</td> <td className="alignRight">x{this.state.gameInfos.slots[this.state.indexClicked].utilityRent["twoUtilitiesMultiplier"]}</td></tr>
                                         </table>
                                     </div>
                                     }
@@ -158,54 +160,54 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
                                         <table className="slotInfos">
-                                            <tr><td className="alignLeft">🚂</td> <td className="alignRight">$4</td></tr>
-                                            <tr><td className="alignLeft">🚂🚂</td> <td className="alignRight">$12</td></tr>
-                                            <tr><td className="alignLeft">🚂🚂🚂</td> <td className="alignRight">$40</td></tr>
-                                            <tr><td className="alignLeft">🚂🚂🚂🚂</td> <td className="alignRight">$70</td></tr>
+                                            <tr><td className="alignLeft">💵</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].price}</td></tr>
+                                            <tr><td className="alignLeft">🚂</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].trainRent["oneStation"]}</td></tr>
+                                            <tr><td className="alignLeft">🚂🚂</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].trainRent["twoStations"]}</td></tr>
+                                            <tr><td className="alignLeft">🚂🚂🚂</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].trainRent["threeStations"]}</td></tr>
+                                            <tr><td className="alignLeft">🚂🚂🚂🚂</td> <td className="alignRight">${this.state.gameInfos.slots[this.state.indexClicked].trainRent["fourStations"]}</td></tr>
                                         </table>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-chance" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>Draw a Chance card.</p>
+                                        <p>{this.state.gameInfos.slots[this.state.indexClicked].description}</p>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-chest" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>Draw a Community Chest card.</p>
+                                        <p>{this.state.gameInfos.slots[this.state.indexClicked].description}</p>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-goToJail" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>Go to Jail. Don't receive $200 from Start.</p>
+                                        <p>{this.state.gameInfos.slots[this.state.indexClicked].description}</p>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-freeParking" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>If jackpot's enabled, receive the money which is in it.</p>
+                                        <p>{this.state.gameInfos.slots[this.state.indexClicked].description}</p>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-start" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>Receive $200 by passing on it or landing on it.</p>
+                                        <p>{this.state.gameInfos.slots[0].description}</p>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-tax" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>Pay $100 when landing on it.</p>
+                                        <p>{this.state.gameInfos.slots[this.state.indexClicked].description}</p>
                                     </div>
                                     }
                                     {this.state.slotClicked && this.state.slotType === "slot-jail" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
-                                        <p>If you're in Jail, you can't move until you're released.</p>
-                                        <p>Else you're in Simple Visit, and you can just be passing by. </p>
+                                        <p>{this.state.gameInfos.slots[this.state.indexClicked].description}</p>
                                     </div>
                                     }
                                 </td>
@@ -222,7 +224,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                             </tr>
                             <tr>
                                 <td id="14" onClick={this.displaySlot.bind(this)} className="pink slot-property">{this.state.gameInfos.slots[14].name}</td>
-                                <td id="36" className="chance"><img onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[36].name}`}/></td>
+                                <td id="36" className="chance"><img id="36" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[36].name}`}/></td>
                             </tr>
                             <tr>
                                 <td id="13" onClick={this.displaySlot.bind(this)} className="pink slot-property">{this.state.gameInfos.slots[13].name}</td>
