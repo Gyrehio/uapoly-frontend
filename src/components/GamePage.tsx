@@ -330,7 +330,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 <div id="chat" className={this.state.showChat ? '' : 'hideChat'}>
                     <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>Return to the game.</button>
                     <div id="chatMessages">
-                        {this.state.messages.map((message) => (
+                        {this.state.messages.reverse().map((message) => (
                             <div className="chatMessage">
                                 <span className="chatMessageSender">{message["sender"]}</span>
                                 <span className="chatMessageContent"><ReactMarkdown>{message["content"]}</ReactMarkdown></span>

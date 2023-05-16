@@ -473,6 +473,9 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
 #chatMessages {
     overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .chatMessageSender {
