@@ -511,6 +511,54 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     margin-left: 5px;
 }
 
+.mobileOnly {
+    display: none;
+}
+
+#chat {
+    height: 770px;
+    width: 400px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#chatInput {
+    width: 100%;
+    display: flex;
+}
+
+#chatInput textarea {
+    flex: 2;
+}
+
+#chatInput input[type="button"] {
+    flex: 1;
+}
+
+#chatMessages {
+    overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.chatMessageSender {
+    font-weight: bold;
+}
+
+.chatMessage {
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+
+    border-bottom: 1px solid grey;
+}
+
+.chatMessage p {
+    margin: 0;
+    padding: 0;
+}
 
 .lds-ripple {
     display: inline-block;
@@ -559,7 +607,7 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     }
   }
 
-@media screen and (max-width: 900px) {
+@media screen and ((max-width: 900px) or (orientation: portrait)) {
     #title {
         display: none;
     }
@@ -646,6 +694,28 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
         width: 100%;
         border: unset;
         border-bottom: 1px solid black;
+    }
+
+    .mobileOnly {
+        display: unset;
+    }
+
+    .chatMessageSender, .chatMessageContent {
+        font-size: 14px;
+    }
+
+    #chat {
+        width: 100%;
+        height: calc(100% - 110px);
+
+        position: absolute;
+        top: 0;
+
+        background-color: white;
+    }
+
+    .hideChat {
+        display: none !important;
     }
 
     .pion {

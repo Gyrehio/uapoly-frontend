@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import ReactMarkdown from "react-markdown";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
 import PlayerInfos from "./PlayerInfos.tsx";
@@ -13,6 +14,14 @@ type GamePageState = {
     slotName: string | null,
     slotType: string | undefined,
     gameInfos: any,
+    messages: {
+        id: number,
+        content: string,
+        sender: string,
+    }[],
+    showChat: boolean,
+    unreadMessages: boolean,
+    currentMessageContent: string,
     whoami: string
 };
 
@@ -34,11 +43,24 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             slotType: undefined,
             gameInfos: {
                 "slots": ["a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"],
+                "players": ["a","a","a","a","a","a","a","a"]
+            },
+            messages: [
+                {
+                    id: -1,
+                    sender: "System",
+                    content: "# Welcome to UApoly !\nThis is the chat, you can talk with other players here.\n## Mobile users\nIf you are on mobile click the 'Return to the game.' button at the top to close the chat window.\n## Formatting\nYou can use a subset of Markdown to format your messages, for example *italic* (`*italic*`) or **bold** (`**bold**`).\n\nYou can find more information about Markdown [here](https://www.markdownguide.org/basic-syntax/).",
+                },
+            ],
+            showChat: false,
+            unreadMessages: true,
+            currentMessageContent: "",
+        },
                 "players": [{ accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }] ,
                 "started": undefined
             },
             whoami: ""
-        }
+        };
 
         this.searchWhoami();
 
@@ -71,6 +93,13 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         this.socket.on('player-disconnected', (object) => {
             console.log(object.player.concat(" has left the game."));
+        });
+
+        this.socket.on('message', (message) => {
+            this.setState({
+                messages: [...this.state.messages, message],
+                unreadMessages: true,
+            });
         });
     }
 
@@ -134,6 +163,30 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 })
             });
         }
+    }
+
+    sendMessage(e) {
+        this.socket.emit('message', {
+            gameId: this.state.gameId,
+            message: this.state.currentMessageContent,
+        });
+
+        this.setState({
+            currentMessageContent: "",
+        });
+    }
+
+    toggleChat(e) {
+        this.setState({
+            showChat: !this.state.showChat,
+            unreadMessages: false,
+        });
+    }
+
+    currentMessageChange(e) {
+        this.setState({
+            currentMessageContent: e.target.value
+        });
     }
 
     render(): React.ReactNode {
@@ -310,6 +363,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                         </tbody>
                     </table>
                 </div>
+                <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>{this.state.unreadMessages ? 'Show chat (!)' : 'Show chat'}</button>
                 <div className="playerList">
                 {this.state.gameInfos.players.map((player) => (
                     <div className="playerInfos">
@@ -321,10 +375,24 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     </div>
                 ))}
                 </div>
+                <div id="chat" className={this.state.showChat ? '' : 'hideChat'}>
+                    <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>Return to the game.</button>
+                    <div id="chatMessages">
+                        {this.state.messages.reverse().map((message) => (
+                            <div className="chatMessage">
+                                <span className="chatMessageSender">{message["sender"]}</span>
+                                <span className="chatMessageContent"><ReactMarkdown>{message["content"]}</ReactMarkdown></span>
+                            </div>
+                        ))}
+                    </div>
+                    <div id="chatInput">
+                        <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)}/>
+                        <button id="chatSendButton" onClick={this.sendMessage.bind(this)} disabled={this.state.currentMessageContent.trim().length === 0}>Send</button>
+                    </div>
+                </div>
             </div>
             <Footer />
             </>
-            
         );
     }
 }
