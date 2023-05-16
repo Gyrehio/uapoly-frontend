@@ -90,8 +90,6 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 messages: [...this.state.messages, message],
                 unreadMessages: true,
             });
-
-            console.log(message);
         });
     }
 
