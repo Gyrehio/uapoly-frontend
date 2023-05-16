@@ -22,6 +22,7 @@ type GamePageState = {
     showChat: boolean,
     unreadMessages: boolean,
     currentMessageContent: string,
+    whoami: string
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -29,6 +30,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
     constructor(props) {
         super(props);
+
+        this.displayStartButton.bind(this);
 
         const urlSplit = window.location.href.split('/');
 
@@ -52,7 +55,14 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             showChat: false,
             unreadMessages: true,
             currentMessageContent: "",
+        },
+                "players": [{ accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }] ,
+                "started": undefined
+            },
+            whoami: ""
         };
+
+        this.searchWhoami();
 
         this.socket = io("",{
             auth: {
@@ -91,6 +101,32 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 unreadMessages: true,
             });
         });
+    }
+
+    searchWhoami() {
+        fetch('/api/user/me', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer ".concat(localStorage.token)
+            }
+        })
+        .then((result) => result.json())
+        .then((res) => this.setState({
+            whoami: res.login
+        }));
+    }
+
+    displayStartButton(players): boolean {
+        console.log(players.find);
+
+        const player = players.find((p: any) => p.accountLogin === this.state.whoami);
+        if (player && player.isGameMaster === true) {
+            return true;
+        }
+        else {
+            return false
+        }
     }
 
     displaySlot(e) {
@@ -187,8 +223,12 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                 <td id="17" className="chest"><img id="17" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[17].name}`}/></td>
                                 <td className="void" colSpan={3} rowSpan={5}/>
                                 <td className="centerDisplay" colSpan={3} rowSpan={5}>
-                                    {!this.state.slotClicked &&
+                                    {!this.state.slotClicked && this.state.gameInfos.started &&
                                     <img className="imageCenter" src="/UAPoly.png" alt="UAPoly"/>}
+
+                                    {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button>Start the game</button>}
+                                    {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}    
+
                                     {this.state.slotClicked && this.state.slotType === "slot-property" && 
                                     <div className="slotDisplay">
                                         <h3>{this.state.slotName}</h3><br/>
@@ -306,9 +346,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                 <td id="5" className="train"><img id="5" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[5].name}`}/></td>
                                 <td id="4" onClick={this.displaySlot.bind(this)} className="tax slot-tax">{this.state.gameInfos.slots[4].name}</td>
                                 <td id="3" onClick={this.displaySlot.bind(this)} className="brown slot-property">{this.state.gameInfos.slots[3].name}</td>
-                                <td id="2"className="chest"><img id="2" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[2].name}`}/></td>
+                                <td id="2" className="chest"><img id="2" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[2].name}`}/></td>
                                 <td id="1" onClick={this.displaySlot.bind(this)} className="brown slot-property">{this.state.gameInfos.slots[1].name}</td>
-                                <td id="0" onClick={this.displaySlotImage.bind(this)} className="start"><img className="slotImage arrow slot-start" src="/arrow.svg" alt={`${this.state.gameInfos.slots[0].name}`}/></td>
+                                <td id="0" onClick={this.displaySlotImage.bind(this)} className="boardSlot start"><img className="slotImage arrow slot-start" src="/arrow.svg" alt={`${this.state.gameInfos.slots[0].name}`}/>
+                                {/*<img className="pion player1" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player2" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player3" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player4" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player5" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player6" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player7" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
+                                <img className="pion player8" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>*/}
+                                    
+                                </td>
                             </tr>
                         </tbody>
                     </table>
