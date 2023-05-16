@@ -34,7 +34,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             sent: [],
         };
 
-        const me = fetch('/user/me', {
+        const me = fetch('/api/user/me', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -42,7 +42,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             }
         })
 
-        const friend = fetch('/friend', {
+        const friend = fetch('/api/friend', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -87,7 +87,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             "login": login,
         });
 
-        const action = fetch('/friend/remove', {
+        const action = fetch('/api/friend/remove', {
             method: "POST",
             body: obj,
             headers: {
@@ -107,7 +107,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             "login": login
         });
 
-        const action = fetch('/friend/add', {
+        const action = fetch('/api/friend/add', {
             method: "POST",
             body: obj,
             headers: {
@@ -126,7 +126,7 @@ class UserDisplay extends Component<UserDisplayProps, UserDisplayState> {
             "login": login
         });
 
-        const action = fetch('/friend/add', {
+        const action = fetch('/api/friend/add', {
             method: "POST",
             body: obj,
             headers: {

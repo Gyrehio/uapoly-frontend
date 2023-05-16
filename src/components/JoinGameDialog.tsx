@@ -68,7 +68,7 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
         console.log(obj);
 
         const loader = async () => {
-            const user = await (await fetch('/game/join', {
+            const user = await (await fetch('/api/game/join', {
                 method: "POST",
                 body: obj,
                 headers: {

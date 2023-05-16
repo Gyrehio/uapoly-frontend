@@ -85,7 +85,7 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
             });
 
             const loader = async () => {
-                const user = await (await fetch('/user/change-password', {
+                const user = await (await fetch('/api/user/change-password', {
                     method: "POST",
                     body: obj,
                     headers: {
@@ -124,7 +124,7 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
             });
 
             const loader = async () => {
-                const user = await (await fetch('/user/change-email', {
+                const user = await (await fetch('/api/user/change-email', {
                     method: "POST",
                     body: obj,
                     headers: {
@@ -149,7 +149,7 @@ class AccountSettings extends Component<AccountSettingsProps, AccountSettingsSta
     }
 
     update() {
-        fetch('/user/me', {
+        fetch('/api/user/me', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

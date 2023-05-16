@@ -62,7 +62,7 @@ class SelectGameDialog extends Component<SelectGameDialogProps, SelectGameDialog
                 "page": 1
             });
 
-            fetch('/game/search', {
+            fetch('/api/game/search', {
                 method: "POST",
                 body: obj,
                 headers: {
@@ -101,7 +101,7 @@ class SelectGameDialog extends Component<SelectGameDialogProps, SelectGameDialog
         });
 
         const loader = async () => {
-            const game = await (await fetch('/game/join', {
+            const game = await (await fetch('/api/game/join', {
                 method: "POST",
                 body: obj,
                 headers: {

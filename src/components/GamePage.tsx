@@ -56,7 +56,15 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             this.setState({
                 gameInfos: game
             })
-        })
+        });
+
+        this.socket.on('player-connected', (object) => {
+            console.log(object.player.concat(" has joined the game."));
+        });
+
+        this.socket.on('player-disconnected', (object) => {
+            console.log(object.player.concat(" has left the game."));
+        });
     }
 
     displaySlot(e) {
@@ -258,7 +266,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 <div className="playerList">
                 {this.state.gameInfos.players.map((player) => (
                     <div className="playerInfos">
-                        <img className="pfp" src={`/user/picture/${player["accountLogin"]}`} alt={player["accountLogin"]}/>
+                        <img className="pfp" src={`/api/user/picture/${player["accountLogin"]}`} alt={player["accountLogin"]}/>
                         <div className="playerStats">
                             <span>{player["accountLogin"]}</span><br/>
                             <span>${player["money"]}</span>

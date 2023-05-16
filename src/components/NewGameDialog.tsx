@@ -193,7 +193,7 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
         console.log(obj);
 
         const loader = async () => {
-            const user = await (await fetch('/game/create', {
+            const user = await (await fetch('/api/game/create', {
                 method: "POST",
                 body: obj,
                 headers: {

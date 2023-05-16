@@ -18,7 +18,7 @@ class PlayerInfos extends Component<PlayerInfosProps, PlayerInfosState> {
     }
 
     update() {
-        const me = fetch('/user/me', {
+        const me = fetch('/api/user/me', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

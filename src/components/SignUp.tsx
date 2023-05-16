@@ -139,7 +139,7 @@ class SignUp extends Component<SignUpProps, SignUpState> {
             });
 
             const loader = async () => {
-                const user = await (await fetch('/user/register', {
+                const user = await (await fetch('/api/user/register', {
                     method: "POST",
                     body: obj,
                     headers: {

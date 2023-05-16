@@ -63,7 +63,7 @@ class SignIn extends Component<UserPageProps, UserPageState> {
         });
 
         const loader = async () => {
-            const user = await (await fetch('/user/login', {
+            const user = await (await fetch('/api/user/login', {
                 method: "POST",
                 body: obj,
                 headers: {

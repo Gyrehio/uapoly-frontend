@@ -22,7 +22,7 @@ class UserPage extends Component<UserPageProps, UserPageState> {
     }
 
     getGames() {
-        fetch("/game/join", {
+        fetch("/api/game/join", {
             method: "GET",
             headers: {
                 "Content-type": "application/json",

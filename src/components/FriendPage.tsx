@@ -71,7 +71,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
                 "page": 1
             });
 
-            fetch('/user/search', {
+            fetch('/api/user/search', {
                 method: "POST",
                 body: obj,
                 headers: {
@@ -95,7 +95,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
         });
 
         const loader = async () => {
-            const user = await (await fetch('/friend/add', {
+            const user = await (await fetch('/api/friend/add', {
                 method: "POST",
                 body: obj,
                 headers: {
@@ -128,7 +128,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
     }
 
     update() {
-        const me = fetch('/user/me', {
+        const me = fetch('/api/user/me', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -136,7 +136,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             }
         })
 
-        const friend = fetch('/friend', {
+        const friend = fetch('/api/friend', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -144,7 +144,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             }
         })
 
-        const pending = fetch('friend/pending', {
+        const pending = fetch('/api/friend/pending', {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
@@ -180,7 +180,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             "login": login,
         });
 
-        fetch('/friend/remove', {
+        fetch('/api/friend/remove', {
             method: "POST",
             body: obj,
             headers: {
@@ -200,7 +200,7 @@ class FriendPage extends Component<FriendPageProps, FriendPageState> {
             "login": login
         });
 
-            fetch('/friend/add', {
+            fetch('/api/friend/add', {
             method: "POST",
             body: obj,
             headers: {

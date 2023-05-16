@@ -18,7 +18,7 @@ class UserHeader extends Component<UserHeaderProps, UserHeaderState> {
                 redirectUrl: null
             };
     
-            fetch('/user/me', {
+            fetch('/api/user/me', {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -69,7 +69,7 @@ class UserHeader extends Component<UserHeaderProps, UserHeaderState> {
                         <h1 id="title">UAPoly</h1>
                     </div>
                     <div className="optionsHolder">
-                        <img className="pfp" src={`/user/picture/${this.state.login}`} alt="Account" onClick={(this.generateRedirectFunction('/user').bind(this))}/>
+                        <img className="pfp" src={`/api/user/picture/${this.state.login}`} alt="Account" onClick={(this.generateRedirectFunction('/user').bind(this))}/>
                         <input type="button" name="friends" value={"Friends"} onClick={this.generateRedirectFunction('/friends').bind(this)} />
                         <input type="button" name="disconnect" value={"Log out"} onClick={this.disconnect.bind(this)} />
                     </div>
