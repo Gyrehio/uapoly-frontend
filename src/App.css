@@ -220,7 +220,8 @@ tr {
 }
 
 td {
-    width: 70px;
+    width: 66px;
+    height: 66px;
     margin-left: auto;
     margin-right: auto;
     border: 1px solid black;
@@ -236,6 +237,7 @@ td {
 }
 
 .slotImage {
+    position: relative;
     width: 60px;
     height: 60px;
 }
@@ -353,10 +355,74 @@ div.optionsHolder input[type="button"] {
 }
 
 .pfp {
+    position: relative;
     border-radius: 50%;
     margin-right: 15px;
     border: 1px solid rgb(47, 126, 190);
     display: inline;
+}
+
+.boardSlot {
+    position: relative;
+    display: block;
+}
+
+.pion {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: solid 1px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: white;
+}
+
+.player1 {
+    bottom: 45px;
+    left: 1px;
+    border-color: red;
+}
+
+.player2 {
+    bottom: 45px;
+    left: 23px;
+    border-color: blue;
+}
+
+.player3 {
+    bottom: 45px;
+    left: 45px;
+    border-color: yellow;
+}
+
+.player4 {
+    bottom: 23px;
+    left: 12px;
+    border-color: green;
+}
+
+.player5 {
+    bottom: 23px;
+    left: 34px;
+    border-color: orange;
+}
+
+.player6 {
+    bottom: 1px;
+    left: 1px;
+    border-color: rgb(61, 197, 250);
+}
+
+.player7 {
+    bottom: 1px;
+    left: 23px;
+    border-color: purple;
+}
+
+.player8 {
+    bottom: 1px;
+    left: 45px;
+    border-color: grey;
 }
 
 .game {
@@ -544,7 +610,8 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     }
     
     td {
-        width: 35px;
+        width: 32px;
+        height: 32px;
         margin-left: auto;
         margin-right: auto;
         border: 1px solid black;
@@ -579,5 +646,58 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
         width: 100%;
         border: unset;
         border-bottom: 1px solid black;
+    }
+
+    .pion {
+        width: 8px;
+        height: 8px;
+    }
+
+    .player1 {
+        bottom: 23px;
+        left: 1px;
+        border-color: red;
+    }
+    
+    .player2 {
+        bottom: 23px;
+        left: 12px;
+        border-color: blue;
+    }
+    
+    .player3 {
+        bottom: 23px;
+        left: 23px;
+        border-color: yellow;
+    }
+    
+    .player4 {
+        bottom: 12px;
+        left: 6px;
+        border-color: green;
+    }
+    
+    .player5 {
+        bottom: 12px;
+        left: 18px;
+        border-color: orange;
+    }
+    
+    .player6 {
+        bottom: 1px;
+        left: 1px;
+        border-color: rgb(61, 197, 250);
+    }
+    
+    .player7 {
+        bottom: 1px;
+        left: 12px;
+        border-color: purple;
+    }
+    
+    .player8 {
+        bottom: 1px;
+        left: 23px;
+        border-color: grey;
     }
 }
