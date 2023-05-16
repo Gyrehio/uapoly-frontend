@@ -463,7 +463,7 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     display: flex;
 }
 
-#chatInput input[type="text"] {
+#chatInput textarea {
     flex: 2;
 }
 
@@ -484,6 +484,11 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     padding-bottom: 2px;
 
     border-bottom: 1px solid grey;
+}
+
+.chatMessage p {
+    margin: 0;
+    padding: 0;
 }
 
 .lds-ripple {
