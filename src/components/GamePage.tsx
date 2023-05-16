@@ -43,7 +43,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             slotType: undefined,
             gameInfos: {
                 "slots": ["a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"],
-                "players": ["a","a","a","a","a","a","a","a"]
+                "players": [{ accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }] ,
+                "started": undefined
             },
             messages: [
                 {
@@ -55,12 +56,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             showChat: false,
             unreadMessages: true,
             currentMessageContent: "",
+            whoami: "",
         },
-                "players": [{ accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }, { accountLogin: "a" }] ,
-                "started": undefined
-            },
-            whoami: ""
-        };
 
         this.searchWhoami();
 
