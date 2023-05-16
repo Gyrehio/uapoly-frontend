@@ -12,7 +12,15 @@ type GamePageState = {
     indexClicked: number,
     slotName: string | null,
     slotType: string | undefined,
-    gameInfos: any
+    gameInfos: any,
+    messages: {
+        id: number,
+        content: string,
+        sender: string,
+    }[],
+    showChat: boolean,
+    unreadMessages: boolean,
+    currentMessageContent: string,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -32,8 +40,28 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             gameInfos: {
                 "slots": ["a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"],
                 "players": ["a","a","a","a","a","a","a","a"]
-            }
-        }
+            },
+            messages: [
+                {
+                    id: -3,
+                    sender: "System",
+                    content: "Welcome to UApoly !"
+                },
+                {
+                    id: -2,
+                    sender: "System",
+                    content: "This is the chat window. You can write messages here and send them to other players."
+                },
+                {
+                    id: -1,
+                    sender: "System",
+                    content: "If you are on mobile, click the 'Return to the game.' button at the top to hide the chat.",
+                },
+            ],
+            showChat: false,
+            unreadMessages: true,
+            currentMessageContent: "",
+        };
 
         this.socket = io("",{
             auth: {
@@ -64,6 +92,15 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         this.socket.on('player-disconnected', (object) => {
             console.log(object.player.concat(" has left the game."));
+        });
+
+        this.socket.on('message', (message) => {
+            this.setState({
+                messages: [...this.state.messages, message],
+                unreadMessages: true,
+            });
+
+            console.log(message);
         });
     }
 
@@ -101,6 +138,30 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 })
             });
         }
+    }
+
+    sendMessage(e) {
+        this.socket.emit('message', {
+            gameId: this.state.gameId,
+            message: this.state.currentMessageContent,
+        });
+
+        this.setState({
+            currentMessageContent: "",
+        });
+    }
+
+    toggleChat(e) {
+        this.setState({
+            showChat: !this.state.showChat,
+            unreadMessages: false,
+        });
+    }
+
+    currentMessageChange(e) {
+        this.setState({
+            currentMessageContent: e.target.value
+        });
     }
 
     render(): React.ReactNode {
@@ -263,6 +324,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                         </tbody>
                     </table>
                 </div>
+                <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>{this.state.unreadMessages ? 'Show chat (!)' : 'Show chat'}</button>
                 <div className="playerList">
                 {this.state.gameInfos.players.map((player) => (
                     <div className="playerInfos">
@@ -274,10 +336,24 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     </div>
                 ))}
                 </div>
+                <div id="chat" className={this.state.showChat ? '' : 'hideChat'}>
+                    <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>Return to the game.</button>
+                    <div id="chatMessages">
+                        {this.state.messages.map((message) => (
+                            <div className="chatMessage">
+                                <span className="chatMessageSender">{message["sender"]}: </span>
+                                <span className="chatMessageContent">{message["content"]}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div id="chatInput">
+                        <input id="chatInputField" type="text" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)}/>
+                        <button id="chatSendButton" onClick={this.sendMessage.bind(this)} disabled={this.state.currentMessageContent.trim().length === 0}>Send</button>
+                    </div>
+                </div>
             </div>
             <Footer />
             </>
-            
         );
     }
 }
