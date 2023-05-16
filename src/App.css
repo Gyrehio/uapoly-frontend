@@ -493,7 +493,7 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     }
   }
 
-@media screen and (max-width: 900px) {
+@media screen and ((max-width: 900px) or (orientation: portrait)) {
     #title {
         display: none;
     }
