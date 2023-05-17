@@ -163,14 +163,18 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     sendMessage(e) {
-        this.socket.emit('message', {
-            gameId: this.state.gameId,
-            message: this.state.currentMessageContent,
-        });
+        e.preventDefault();
 
-        this.setState({
-            currentMessageContent: "",
-        });
+        if(this.state.currentMessageContent.trim().length !== 0) {
+            this.socket.emit('message', {
+                gameId: this.state.gameId,
+                message: this.state.currentMessageContent,
+            });
+    
+            this.setState({
+                currentMessageContent: "",
+            });
+        }
     }
 
     toggleChat(e) {
@@ -184,6 +188,12 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         this.setState({
             currentMessageContent: e.target.value
         });
+    }
+
+    chatBoxKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+        if(e.key === "Enter" && !e.shiftKey) {
+            this.sendMessage(e);
+        }
     }
 
     render(): React.ReactNode {
@@ -382,10 +392,10 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                             </div>
                         ))}
                     </div>
-                    <div id="chatInput">
-                        <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)}/>
-                        <button id="chatSendButton" onClick={this.sendMessage.bind(this)} disabled={this.state.currentMessageContent.trim().length === 0}>Send</button>
-                    </div>
+                    <form id="chatInput" onSubmit={this.sendMessage.bind(this)}>
+                        <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)} onKeyDown={this.chatBoxKeyDown.bind(this)}/>
+                        <button id="chatSendButton" disabled={this.state.currentMessageContent.trim().length === 0} type="submit">Send</button>
+                    </form>
                 </div>
             </div>
             <Footer />
