@@ -5,8 +5,8 @@ import remarkGemoji from "remark-gemoji";
 import remarkBreaks from "remark-breaks";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
-import PlayerInfos from "./PlayerInfos.tsx";
 import { Socket, io } from "socket.io-client";
+import { getSocket } from "../GlobalSocket.ts";
 
 type GamePageProps = {};
 
@@ -68,38 +68,50 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         this.searchWhoami();
 
-        this.socket = io("",{
-            auth: {
-                token: localStorage.token
-            }
+        getSocket().on('connect', () => {
+            getSocket().emit('join', this.state.gameId);
         });
 
-        this.socket.on('connect', () => {
-            this.socket.emit('join', this.state.gameId);
-        });
-
-        this.socket.on('joined', (game) => {
+        getSocket().on('joined', (game) => {
             console.log(game);
             this.setState({
                 gameInfos: game
             });
         });
 
-        this.socket.on('update', (game) => {
+        getSocket().on('update', (game) => {
             this.setState({
                 gameInfos: game
             })
         });
 
-        this.socket.on('player-connected', (object) => {
-            console.log(object.player.concat(" has joined the game."));
+        getSocket().on('player-connected', (object) => {
+            let message = {
+                id: -1,
+                sender: "System",
+                content: "**"+object.player+"** has joined the game."
+            };
+            console.log(message.content);
+            this.setState({
+                messages: [...this.state.messages, message],
+                unreadMessages: true
+            });
         });
 
-        this.socket.on('player-disconnected', (object) => {
-            console.log(object.player.concat(" has left the game."));
+        getSocket().on('player-disconnected', (object) => {
+            let message = {
+                id: -1,
+                sender: "System",
+                content: "**"+object.player+"** has left the game."
+            };
+            console.log(message.content);
+            this.setState({
+                messages: [...this.state.messages, message],
+                unreadMessages: true
+            });
         });
 
-        this.socket.on('message', (message) => {
+        getSocket().on('message', (message) => {
             this.setState({
                 messages: [...this.state.messages, message],
                 unreadMessages: true,
