@@ -526,18 +526,29 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
 #chatInput {
     width: 100%;
-    display: flex;
 
     border: unset;
     margin: unset;
     padding: unset;
 }
 
-#chatInput textarea {
+#chatInput select {
+    width: 100%;
+}
+
+#chatInput div {
+    display: flex;
+}
+
+#chatInput div label {
+    padding-right: 5px;
+}
+
+#chatInput div textarea {
     flex: 2;
 }
 
-#chatInput input[type="button"] {
+#chatInput div input[type="button"] {
     flex: 1;
 }
 

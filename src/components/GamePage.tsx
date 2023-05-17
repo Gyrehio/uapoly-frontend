@@ -22,7 +22,8 @@ type GamePageState = {
     showChat: boolean,
     unreadMessages: boolean,
     currentMessageContent: string,
-    whoami: string
+    whoami: string,
+    messageRecipient: string,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -57,6 +58,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             unreadMessages: true,
             currentMessageContent: "",
             whoami: "",
+            messageRecipient: "*", // * = everyone, otherwise the login of the recipient
         };
 
         this.searchWhoami();
@@ -169,10 +171,12 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             this.socket.emit('message', {
                 gameId: this.state.gameId,
                 message: this.state.currentMessageContent,
+                recipient: this.state.messageRecipient === "*" ? undefined : this.state.messageRecipient,
             });
     
             this.setState({
                 currentMessageContent: "",
+                messageRecipient: "*",
             });
         }
     }
@@ -194,6 +198,23 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         if(e.key === "Enter" && !e.shiftKey) {
             this.sendMessage(e);
         }
+    }
+
+    displayMessage(message) {
+        if(message.sender === this.state.whoami || !message.recipient || message.recipient === this.state.whoami) {
+            return (
+                <div className="chatMessage">
+                    <span className="chatMessageSender">{message["sender"]}{message.recipient !== undefined && ` to ${message.recipient}`}</span>
+                    <span className="chatMessageContent"><ReactMarkdown>{message["content"]}</ReactMarkdown></span>
+                </div>
+            );
+        }
+    }
+
+    recipientChange(e) {
+        this.setState({
+            messageRecipient: e.target.value
+        });
     }
 
     render(): React.ReactNode {
@@ -385,16 +406,23 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 <div id="chat" className={this.state.showChat ? '' : 'hideChat'}>
                     <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>Return to the game.</button>
                     <div id="chatMessages">
-                        {this.state.messages.reverse().map((message) => (
-                            <div className="chatMessage">
-                                <span className="chatMessageSender">{message["sender"]}</span>
-                                <span className="chatMessageContent"><ReactMarkdown>{message["content"]}</ReactMarkdown></span>
-                            </div>
-                        ))}
+                        {this.state.messages.reverse().map((message) => this.displayMessage(message))}
                     </div>
+                    
                     <form id="chatInput" onSubmit={this.sendMessage.bind(this)}>
-                        <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)} onKeyDown={this.chatBoxKeyDown.bind(this)}/>
-                        <button id="chatSendButton" disabled={this.state.currentMessageContent.trim().length === 0} type="submit">Send</button>
+                        <div>
+                            <label htmlFor="msgRecipient">To:</label>
+                            <select id="msgRecipient" value={this.state.messageRecipient} onChange={this.recipientChange.bind(this)}>
+                                <option value="*">Everyone</option>
+                                {this.state.gameInfos.players.map((player) => (
+                                    <option value={player["accountLogin"]}>{player["accountLogin"]}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)} onKeyDown={this.chatBoxKeyDown.bind(this)}/>
+                            <button id="chatSendButton" disabled={this.state.currentMessageContent.trim().length === 0} type="submit">Send</button>
+                        </div>
                     </form>
                 </div>
             </div>
