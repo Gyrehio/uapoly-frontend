@@ -5,7 +5,6 @@ import remarkGemoji from "remark-gemoji";
 import remarkBreaks from "remark-breaks";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
-import { Socket, io } from "socket.io-client";
 import { getSocket } from "../GlobalSocket.ts";
 
 type GamePageProps = {};
@@ -28,11 +27,10 @@ type GamePageState = {
     whoami: string,
     messageRecipient: string,
     showEmojiPicker: boolean,
+    currentSystemMessageId: number,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
-    socket: Socket;
-
     constructor(props) {
         super(props);
 
@@ -64,6 +62,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             whoami: "",
             messageRecipient: "*", // * = everyone, otherwise the login of the recipient
             showEmojiPicker: false,
+            currentSystemMessageId: -2,
         };
 
         this.searchWhoami();
@@ -87,33 +86,35 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('player-connected', (object) => {
             let message = {
-                id: -1,
+                id: this.state.currentSystemMessageId,
                 sender: "System",
-                content: "**"+object.player+"** has joined the game."
+                content: "**" + object.accountLogin + "** has joined the game."
             };
             console.log(message.content);
             this.setState({
-                messages: [...this.state.messages, message],
-                unreadMessages: true
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1,
             });
         });
 
         getSocket().on('player-disconnected', (object) => {
             let message = {
-                id: -1,
+                id: this.state.currentSystemMessageId,
                 sender: "System",
-                content: "**"+object.player+"** has left the game."
+                content: "**" + object.accountLogin + "** has left the game."
             };
             console.log(message.content);
             this.setState({
-                messages: [...this.state.messages, message],
-                unreadMessages: true
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1,
             });
         });
 
         getSocket().on('message', (message) => {
             this.setState({
-                messages: [...this.state.messages, message],
+                messages: [message, ...this.state.messages],
                 unreadMessages: true,
             });
         });
@@ -185,7 +186,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         e.preventDefault();
 
         if(this.state.currentMessageContent.trim().length !== 0) {
-            this.socket.emit('message', {
+            getSocket().emit('message', {
                 gameId: this.state.gameId,
                 message: this.state.currentMessageContent,
                 recipient: this.state.messageRecipient === "*" ? undefined : this.state.messageRecipient,
@@ -436,7 +437,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 <div id="chat" className={this.state.showChat ? '' : 'hideChat'}>
                     <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>Return to the game.</button>
                     <div id="chatMessages">
-                        {this.state.messages.reverse().map((message) => this.displayMessage(message))}
+                        {this.state.messages.map((message) => this.displayMessage(message))}
                     </div>
 
                     {this.state.showEmojiPicker && 

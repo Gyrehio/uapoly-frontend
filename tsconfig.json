@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+       "lib": [
+          "es5",
+          "es6",
+          "es7",
+          "es2017",
+          "es2018",
+          "es2019",
+          "es2020",
+          "DOM"
+       ],
+       "target": "ES2020",
+       "sourceMap": true,
+       "esModuleInterop": true,
+       "allowImportingTsExtensions": true,
+       "noEmit": true,
+       "module": "commonjs",
+       "moduleResolution": "node",
+       "jsx": "react-jsx"
+    }
+ }
