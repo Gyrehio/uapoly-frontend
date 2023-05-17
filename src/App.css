@@ -546,9 +546,13 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
 .chatMessageSender {
     font-weight: bold;
+    align-self: center;
 }
 
 .chatMessage {
+    display: flex;
+    flex-direction: column;
+
     margin-bottom: 2px;
     padding-bottom: 2px;
 
