@@ -57,7 +57,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             unreadMessages: true,
             currentMessageContent: "",
             whoami: "",
-        },
+        };
 
         this.searchWhoami();
 
