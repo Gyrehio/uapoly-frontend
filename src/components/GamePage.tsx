@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import ReactMarkdown from "react-markdown";
+import EmojiPicker, { EmojiStyle, Emoji } from "emoji-picker-react";
+import remarkGemoji from "remark-gemoji";
+import remarkBreaks from "remark-breaks";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
 import PlayerInfos from "./PlayerInfos.tsx";
@@ -24,6 +27,7 @@ type GamePageState = {
     currentMessageContent: string,
     whoami: string,
     messageRecipient: string,
+    showEmojiPicker: boolean,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -59,6 +63,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             currentMessageContent: "",
             whoami: "",
             messageRecipient: "*", // * = everyone, otherwise the login of the recipient
+            showEmojiPicker: false,
         };
 
         this.searchWhoami();
@@ -205,7 +210,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             return (
                 <div className="chatMessage">
                     <span className="chatMessageSender">{message["sender"]}{message.recipient !== undefined && ` to ${message.recipient}`}</span>
-                    <span className="chatMessageContent"><ReactMarkdown>{message["content"]}</ReactMarkdown></span>
+                    <span className="chatMessageContent"><ReactMarkdown remarkPlugins={[remarkBreaks, remarkGemoji]}>{message["content"]}</ReactMarkdown></span>
                 </div>
             );
         }
@@ -214,6 +219,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     recipientChange(e) {
         this.setState({
             messageRecipient: e.target.value
+        });
+    }
+
+    emojiClick(e) {
+        this.setState({
+            currentMessageContent: this.state.currentMessageContent.concat(e.emoji),
+            showEmojiPicker: false,
+        });
+    }
+
+    toggleEmojiPicker(e) {
+        this.setState({
+            showEmojiPicker: !this.state.showEmojiPicker
         });
     }
 
@@ -408,7 +426,13 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     <div id="chatMessages">
                         {this.state.messages.reverse().map((message) => this.displayMessage(message))}
                     </div>
-                    
+
+                    {this.state.showEmojiPicker && 
+                        <div id="emojiPicker">
+                            <EmojiPicker height="100%" width="100%" onEmojiClick={this.emojiClick.bind(this)} emojiStyle={EmojiStyle.NATIVE} />
+                        </div>
+                    }
+
                     <form id="chatInput" onSubmit={this.sendMessage.bind(this)}>
                         <div>
                             <label htmlFor="msgRecipient">To:</label>
@@ -420,6 +444,10 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                             </select>
                         </div>
                         <div>
+                            <div id="emojiPickerBtn" onClick={this.toggleEmojiPicker.bind(this)} title="Pick an emoji">
+                                <Emoji unified="1f604" size={25} emojiStyle={EmojiStyle.NATIVE}/>
+                            </div>
+
                             <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)} onKeyDown={this.chatBoxKeyDown.bind(this)}/>
                             <button id="chatSendButton" disabled={this.state.currentMessageContent.trim().length === 0} type="submit">Send</button>
                         </div>
