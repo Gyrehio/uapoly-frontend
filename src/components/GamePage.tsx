@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import ReactMarkdown from "react-markdown";
+import EmojiPicker, { EmojiStyle, Emoji } from "emoji-picker-react";
+import remarkGemoji from "remark-gemoji";
+import remarkBreaks from "remark-breaks";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
 import PlayerInfos from "./PlayerInfos.tsx";
@@ -22,7 +25,9 @@ type GamePageState = {
     showChat: boolean,
     unreadMessages: boolean,
     currentMessageContent: string,
-    whoami: string
+    whoami: string,
+    messageRecipient: string,
+    showEmojiPicker: boolean,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -57,7 +62,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             unreadMessages: true,
             currentMessageContent: "",
             whoami: "",
-        },
+            messageRecipient: "*", // * = everyone, otherwise the login of the recipient
+            showEmojiPicker: false,
+        };
 
         this.searchWhoami();
 
@@ -163,14 +170,20 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     sendMessage(e) {
-        this.socket.emit('message', {
-            gameId: this.state.gameId,
-            message: this.state.currentMessageContent,
-        });
+        e.preventDefault();
 
-        this.setState({
-            currentMessageContent: "",
-        });
+        if(this.state.currentMessageContent.trim().length !== 0) {
+            this.socket.emit('message', {
+                gameId: this.state.gameId,
+                message: this.state.currentMessageContent,
+                recipient: this.state.messageRecipient === "*" ? undefined : this.state.messageRecipient,
+            });
+    
+            this.setState({
+                currentMessageContent: "",
+                messageRecipient: "*",
+            });
+        }
     }
 
     toggleChat(e) {
@@ -183,6 +196,42 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     currentMessageChange(e) {
         this.setState({
             currentMessageContent: e.target.value
+        });
+    }
+
+    chatBoxKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+        if(e.key === "Enter" && !e.shiftKey) {
+            this.sendMessage(e);
+        }
+    }
+
+    displayMessage(message) {
+        if(message.sender === this.state.whoami || !message.recipient || message.recipient === this.state.whoami) {
+            return (
+                <div className="chatMessage">
+                    <span className="chatMessageSender">{message["sender"]}{message.recipient !== undefined && ` to ${message.recipient}`}</span>
+                    <span className="chatMessageContent"><ReactMarkdown remarkPlugins={[remarkBreaks, remarkGemoji]}>{message["content"]}</ReactMarkdown></span>
+                </div>
+            );
+        }
+    }
+
+    recipientChange(e) {
+        this.setState({
+            messageRecipient: e.target.value
+        });
+    }
+
+    emojiClick(e) {
+        this.setState({
+            currentMessageContent: this.state.currentMessageContent.concat(e.emoji),
+            showEmojiPicker: false,
+        });
+    }
+
+    toggleEmojiPicker(e) {
+        this.setState({
+            showEmojiPicker: !this.state.showEmojiPicker
         });
     }
 
@@ -375,17 +424,34 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 <div id="chat" className={this.state.showChat ? '' : 'hideChat'}>
                     <button className="mobileOnly" onClick={this.toggleChat.bind(this)}>Return to the game.</button>
                     <div id="chatMessages">
-                        {this.state.messages.reverse().map((message) => (
-                            <div className="chatMessage">
-                                <span className="chatMessageSender">{message["sender"]}</span>
-                                <span className="chatMessageContent"><ReactMarkdown>{message["content"]}</ReactMarkdown></span>
+                        {this.state.messages.reverse().map((message) => this.displayMessage(message))}
+                    </div>
+
+                    {this.state.showEmojiPicker && 
+                        <div id="emojiPicker">
+                            <EmojiPicker height="100%" width="100%" onEmojiClick={this.emojiClick.bind(this)} emojiStyle={EmojiStyle.NATIVE} />
+                        </div>
+                    }
+
+                    <form id="chatInput" onSubmit={this.sendMessage.bind(this)}>
+                        <div>
+                            <label htmlFor="msgRecipient">To:</label>
+                            <select id="msgRecipient" value={this.state.messageRecipient} onChange={this.recipientChange.bind(this)}>
+                                <option value="*">Everyone</option>
+                                {this.state.gameInfos.players.map((player) => (
+                                    <option value={player["accountLogin"]}>{player["accountLogin"]}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <div id="emojiPickerBtn" onClick={this.toggleEmojiPicker.bind(this)} title="Pick an emoji">
+                                <Emoji unified="1f604" size={25} emojiStyle={EmojiStyle.NATIVE}/>
                             </div>
-                        ))}
-                    </div>
-                    <div id="chatInput">
-                        <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)}/>
-                        <button id="chatSendButton" onClick={this.sendMessage.bind(this)} disabled={this.state.currentMessageContent.trim().length === 0}>Send</button>
-                    </div>
+
+                            <textarea id="chatInputField" placeholder="Type your message here" value={this.state.currentMessageContent} onChange={this.currentMessageChange.bind(this)} onKeyDown={this.chatBoxKeyDown.bind(this)}/>
+                            <button id="chatSendButton" disabled={this.state.currentMessageContent.trim().length === 0} type="submit">Send</button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <Footer />

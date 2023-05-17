@@ -526,14 +526,29 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
 #chatInput {
     width: 100%;
+
+    border: unset;
+    margin: unset;
+    padding: unset;
+}
+
+#chatInput select {
+    width: 100%;
+}
+
+#chatInput div {
     display: flex;
 }
 
-#chatInput textarea {
+#chatInput div label {
+    padding-right: 5px;
+}
+
+#chatInput div textarea {
     flex: 2;
 }
 
-#chatInput input[type="button"] {
+#chatInput div input[type="button"] {
     flex: 1;
 }
 
@@ -546,9 +561,13 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
 .chatMessageSender {
     font-weight: bold;
+    align-self: center;
 }
 
 .chatMessage {
+    display: flex;
+    flex-direction: column;
+
     margin-bottom: 2px;
     padding-bottom: 2px;
 
@@ -558,6 +577,22 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 .chatMessage p {
     margin: 0;
     padding: 0;
+}
+
+#emojiPicker {
+    position: absolute;
+    bottom: 70px;
+    right: 420px;
+
+    width: 400px;
+    height: 400px;
+}
+
+#emojiPickerBtn {
+    display: flex;
+    align-items: center;
+
+    padding-right: 5px;
 }
 
 .lds-ripple {
@@ -705,8 +740,11 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
     }
 
     #chat {
-        width: 100%;
+        width: calc(100% - 10px);
         height: calc(100% - 110px);
+
+        padding-left: 5px;
+        padding-right: 5px;
 
         position: absolute;
         top: 0;
@@ -716,6 +754,12 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 
     .hideChat {
         display: none !important;
+    }
+
+    #emojiPicker {
+        right: 2px;
+        bottom: 100px;
+        width: 100%;
     }
 
     .pion {
