@@ -81,10 +81,14 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('update', (game) => {
             this.setState({
                 gameInfos: game
-            })
+            });
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
         });
 
         getSocket().on('player-connected', (object) => {
+            console.log(object);
             let message = {
                 id: this.state.currentSystemMessageId,
                 sender: "System",
@@ -118,6 +122,10 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 unreadMessages: true,
             });
         });
+    }
+
+    startGame() {
+        getSocket().emit('start', this.state.gameId);
     }
 
     searchWhoami() {
@@ -179,6 +187,25 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     else return false;
                 })
             });
+        }
+    }
+
+    displayPawns(nb: number) {
+        document.querySelectorAll(`td#slot${nb} .pion`).forEach(e => {
+            e.remove();
+        });
+        let selector = document.querySelector(`td#slot${nb}`);
+        var cpt = 0;
+        for (let player of this.state.gameInfos.players) {
+            if (player.currentSlotIndex == nb) {
+                let img = document.createElement("img");
+                img.classList.add("pion");
+                img.classList.add(`player${cpt+1}`);
+                img.src = `/api/user/picture/${player.accountLogin}`;
+                img.alt = player.accountLogin;
+                selector.appendChild(img);
+            }
+            cpt++;
         }
     }
 
@@ -257,35 +284,35 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     <table>
                         <tbody>
                             <tr>
-                                <td id="20"><img id="20" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-freeParking" src="/parking.svg" alt={`${this.state.gameInfos.slots[20].name}`}/></td>
-                                <td id="21" onClick={this.displaySlot.bind(this)} className="red slot-property">{this.state.gameInfos.slots[21].name}</td>
-                                <td id="22" className="chance"><img id="22" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[22].name}`}/></td>
-                                <td id="23" onClick={this.displaySlot.bind(this)} className="red slot-property">{this.state.gameInfos.slots[23].name}</td>
-                                <td id="24" onClick={this.displaySlot.bind(this)} className="red slot-property">{this.state.gameInfos.slots[24].name}</td>
-                                <td id="25" className="train"><img id="25" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[25].name}`}/></td>
-                                <td id="26" onClick={this.displaySlot.bind(this)} className="yellow slot-property">{this.state.gameInfos.slots[26].name}</td>
-                                <td id="27" onClick={this.displaySlot.bind(this)} className="yellow slot-property">{this.state.gameInfos.slots[27].name}</td>
-                                <td id="28" onClick={this.displaySlot.bind(this)} className="utility slot-utility">{this.state.gameInfos.slots[28].name}</td>
-                                <td id="29" onClick={this.displaySlot.bind(this)} className="yellow slot-property">{this.state.gameInfos.slots[29].name}</td>
-                                <td id="30" className="jail"><img id="30" onClick={this.displaySlotImage.bind(this)} className="slotImage goToJail slot-goToJail" src="/whistle.svg" alt={`${this.state.gameInfos.slots[30].name}`}/></td>
+                                <td id="boardSlot slot20"><img id="slot20" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-freeParking" src="/parking.svg" alt={`${this.state.gameInfos.slots[20].name}`}/></td>
+                                <td id="slot21" onClick={this.displaySlot.bind(this)} className="boardSlot red slot-property">{this.state.gameInfos.slots[21].name}</td>
+                                <td id="boardSlot slot22" className="chance"><img id="slot22" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[22].name}`}/></td>
+                                <td id="slot23" onClick={this.displaySlot.bind(this)} className="boardSlot red slot-property">{this.state.gameInfos.slots[23].name}</td>
+                                <td id="slot24" onClick={this.displaySlot.bind(this)} className="boardSlot red slot-property">{this.state.gameInfos.slots[24].name}</td>
+                                <td id="boardSlot slot25" className="train"><img id="slot25" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[25].name}`}/></td>
+                                <td id="slot26" onClick={this.displaySlot.bind(this)} className="boardSlot yellow slot-property">{this.state.gameInfos.slots[26].name}</td>
+                                <td id="slot27" onClick={this.displaySlot.bind(this)} className="boardSlot yellow slot-property">{this.state.gameInfos.slots[27].name}</td>
+                                <td id="slot28" onClick={this.displaySlot.bind(this)} className="boardSlot utility slot-utility">{this.state.gameInfos.slots[28].name}</td>
+                                <td id="slot29" onClick={this.displaySlot.bind(this)} className="boardSlot yellow slot-property">{this.state.gameInfos.slots[29].name}</td>
+                                <td id="boardSlot slot30" className="jail"><img id="slot30" onClick={this.displaySlotImage.bind(this)} className="slotImage goToJail slot-goToJail" src="/whistle.svg" alt={`${this.state.gameInfos.slots[30].name}`}/></td>
                             </tr>
                             <tr>
-                                <td id="19" onClick={this.displaySlot.bind(this)} className="orange slot-property">{this.state.gameInfos.slots[19].name}</td>
+                                <td id="slot19" onClick={this.displaySlot.bind(this)} className="boardSlot orange slot-property">{this.state.gameInfos.slots[19].name}</td>
                                 <td className="void" colSpan={9} rowSpan={2} />
-                                <td id="31" onClick={this.displaySlot.bind(this)} className="green slot-property">{this.state.gameInfos.slots[31].name}</td>
+                                <td id="slot31" onClick={this.displaySlot.bind(this)} className="boardSlot green slot-property">{this.state.gameInfos.slots[31].name}</td>
                             </tr>
                             <tr>
-                                <td id="18" onClick={this.displaySlot.bind(this)} className="orange slot-property">{this.state.gameInfos.slots[18].name}</td>
-                                <td id="32" onClick={this.displaySlot.bind(this)} className="green slot-property">{this.state.gameInfos.slots[32].name}</td>
+                                <td id="slot18" onClick={this.displaySlot.bind(this)} className="boardSlot orange slot-property">{this.state.gameInfos.slots[18].name}</td>
+                                <td id="slot32" onClick={this.displaySlot.bind(this)} className="boardSlot green slot-property">{this.state.gameInfos.slots[32].name}</td>
                             </tr>
                             <tr>
-                                <td id="17" className="chest"><img id="17" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[17].name}`}/></td>
+                                <td id="slot17" className="boardSlot chest"><img id="slot17" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[17].name}`}/></td>
                                 <td className="void" colSpan={3} rowSpan={5}/>
                                 <td className="centerDisplay" colSpan={3} rowSpan={5}>
                                     {!this.state.slotClicked && this.state.gameInfos.started &&
                                     <img className="imageCenter" src="/UAPoly.png" alt="UAPoly"/>}
 
-                                    {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button>Start the game</button>}
+                                    {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button onClick={this.startGame.bind(this)}>Start the game</button>}
                                     {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}    
 
                                     {this.state.slotClicked && this.state.slotType === "slot-property" && 
@@ -369,55 +396,45 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                     }
                                 </td>
                                 <td className="void" colSpan={3} rowSpan={5}/>
-                                <td id="33" className="chest"><img id="33" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[33].name}`}/></td>
+                                <td id="slot33" className="boardSlot chest"><img id="slot33" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[33].name}`}/></td>
                             </tr>
                             <tr>
-                                <td id="16" onClick={this.displaySlot.bind(this)} className="orange slot-property">{this.state.gameInfos.slots[16].name}</td>
-                                <td id="34" onClick={this.displaySlot.bind(this)} className="green slot-property">{this.state.gameInfos.slots[34].name}</td>
+                                <td id="slot16" onClick={this.displaySlot.bind(this)} className="boardSlot orange slot-property">{this.state.gameInfos.slots[16].name}</td>
+                                <td id="slot34" onClick={this.displaySlot.bind(this)} className="boardSlot green slot-property">{this.state.gameInfos.slots[34].name}</td>
                             </tr>
                             <tr>
-                                <td id="15" className="train"><img id="15" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[15].name}`}/></td>
-                                <td id="35" className="train"><img id="35" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[35].name}`}/></td>
+                                <td id="slot15" className="boardSlot train"><img id="slot15" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[15].name}`}/></td>
+                                <td id="slot35" className="boardSlot train"><img id="slot35" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[35].name}`}/></td>
                             </tr>
                             <tr>
-                                <td id="14" onClick={this.displaySlot.bind(this)} className="pink slot-property">{this.state.gameInfos.slots[14].name}</td>
-                                <td id="36" className="chance"><img id="36" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[36].name}`}/></td>
+                                <td id="slot14" onClick={this.displaySlot.bind(this)} className="boardSlot pink slot-property">{this.state.gameInfos.slots[14].name}</td>
+                                <td id="slot36" className="boardSlot chance"><img id="slot36" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[36].name}`}/></td>
                             </tr>
                             <tr>
-                                <td id="13" onClick={this.displaySlot.bind(this)} className="pink slot-property">{this.state.gameInfos.slots[13].name}</td>
-                                <td id="37" onClick={this.displaySlot.bind(this)} className="blue slot-property">{this.state.gameInfos.slots[37].name}</td>
+                                <td id="slot13" onClick={this.displaySlot.bind(this)} className="boardSlot pink slot-property">{this.state.gameInfos.slots[13].name}</td>
+                                <td id="slot37" onClick={this.displaySlot.bind(this)} className="boardSlot blue slot-property">{this.state.gameInfos.slots[37].name}</td>
                             </tr>
                             <tr>
-                                <td id="12" onClick={this.displaySlot.bind(this)} className="utility slot-utility">{this.state.gameInfos.slots[12].name}</td>
+                                <td id="slot12" onClick={this.displaySlot.bind(this)} className="boardSlot utility slot-utility">{this.state.gameInfos.slots[12].name}</td>
                                 <td className="void" colSpan={9} rowSpan={2} />
-                                <td id="38" onClick={this.displaySlot.bind(this)} className="tax slot-tax">{this.state.gameInfos.slots[38].name}</td>
+                                <td id="slot38" onClick={this.displaySlot.bind(this)} className="boardSlot tax slot-tax">{this.state.gameInfos.slots[38].name}</td>
                             </tr>
                             <tr>
-                                <td id="11" onClick={this.displaySlot.bind(this)} className="pink slot-property">{this.state.gameInfos.slots[11].name}</td>
-                                <td id="39" onClick={this.displaySlot.bind(this)} className="blue slot-property">{this.state.gameInfos.slots[39].name}</td>
+                                <td id="slot11" onClick={this.displaySlot.bind(this)} className="boardSlot pink slot-property">{this.state.gameInfos.slots[11].name}</td>
+                                <td id="slot39" onClick={this.displaySlot.bind(this)} className="boardSlot blue slot-property">{this.state.gameInfos.slots[39].name}</td>
                             </tr>
                             <tr>
-                                <td id="10" onClick={this.displaySlot.bind(this)} className="jail slot-jail">{this.state.gameInfos.slots[10].name}</td>
-                                <td id="9" onClick={this.displaySlot.bind(this)} className="white slot-property">{this.state.gameInfos.slots[9].name}</td>
-                                <td id="8" onClick={this.displaySlot.bind(this)} className="white slot-property">{this.state.gameInfos.slots[8].name}</td>
-                                <td id="7" className="chance"><img id="7" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[7].name}`}/></td>
-                                <td id="6" onClick={this.displaySlot.bind(this)} className="white slot-property">{this.state.gameInfos.slots[6].name}</td>
-                                <td id="5" className="train"><img id="5" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[5].name}`}/></td>
-                                <td id="4" onClick={this.displaySlot.bind(this)} className="tax slot-tax">{this.state.gameInfos.slots[4].name}</td>
-                                <td id="3" onClick={this.displaySlot.bind(this)} className="brown slot-property">{this.state.gameInfos.slots[3].name}</td>
-                                <td id="2" className="chest"><img id="2" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[2].name}`}/></td>
-                                <td id="1" onClick={this.displaySlot.bind(this)} className="brown slot-property">{this.state.gameInfos.slots[1].name}</td>
-                                <td id="0" onClick={this.displaySlotImage.bind(this)} className="boardSlot start"><img className="slotImage arrow slot-start" src="/arrow.svg" alt={`${this.state.gameInfos.slots[0].name}`}/>
-                                {/*<img className="pion player1" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player2" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player3" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player4" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player5" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player6" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player7" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>
-                                <img className="pion player8" src={`/api/user/picture/Gyrehio`} alt="Gyrehio"/>*/}
-                                    
-                                </td>
+                                <td id="slot10" onClick={this.displaySlot.bind(this)} className="boardSlot jail slot-jail">{this.state.gameInfos.slots[10].name}</td>
+                                <td id="slot9" onClick={this.displaySlot.bind(this)} className="boardSlot white slot-property">{this.state.gameInfos.slots[9].name}</td>
+                                <td id="slot8" onClick={this.displaySlot.bind(this)} className="boardSlot white slot-property">{this.state.gameInfos.slots[8].name}</td>
+                                <td id="slot7" className="boardSlot chance"><img id="slot7" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chance" src="/chance.svg" alt={`${this.state.gameInfos.slots[7].name}`}/></td>
+                                <td id="slot6" onClick={this.displaySlot.bind(this)} className="boardSlot white slot-property">{this.state.gameInfos.slots[6].name}</td>
+                                <td id="slot5" className="boardSlot train"><img id="slot5" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-train" src="/train.svg" alt={`${this.state.gameInfos.slots[5].name}`}/></td>
+                                <td id="slot4" onClick={this.displaySlot.bind(this)} className="boardSlot tax slot-tax">{this.state.gameInfos.slots[4].name}</td>
+                                <td id="slot3" onClick={this.displaySlot.bind(this)} className="boardSlot brown slot-property">{this.state.gameInfos.slots[3].name}</td>
+                                <td id="slot2" className="boardSlot chest"><img id="slot2" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[2].name}`}/></td>
+                                <td id="slot1" onClick={this.displaySlot.bind(this)} className="boardSlot brown slot-property">{this.state.gameInfos.slots[1].name}</td>
+                                <td id="slot0" onClick={this.displaySlotImage.bind(this)} className="boardSlot start"><img className="slotImage arrow slot-start" src="/arrow.svg" alt={`${this.state.gameInfos.slots[0].name}`}/></td>
                             </tr>
                         </tbody>
                     </table>

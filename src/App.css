@@ -364,7 +364,6 @@ div.optionsHolder input[type="button"] {
 
 .boardSlot {
     position: relative;
-    display: block;
 }
 
 .pion {
@@ -505,6 +504,10 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
 .friends, .games {
     margin-top: 2px;
     margin-bottom: 2px;
+}
+
+.games {
+    max-height: 350px;
 }
 
 .friends img, .games img {
@@ -678,6 +681,10 @@ div.friendlist label.title, div.receivedRequests label.title, div.sentRequests l
         flex-direction: row-reverse;
         margin-right: auto;
         margin-left: 10px;
+    }
+
+    .games {
+        height: 300px;
     }
 
     table {
