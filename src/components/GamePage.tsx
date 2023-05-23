@@ -30,8 +30,9 @@ type GamePageState = {
     showEmojiPicker: boolean,
     currentSystemMessageId: number,
     diceRolls: number[],
-    isRolled: boolean,
-    position: number,
+    startTurn: boolean,
+    endTurn: boolean,
+    position: number | undefined,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -68,8 +69,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             showEmojiPicker: false,
             currentSystemMessageId: -2,
             diceRolls:[],
-            isRolled: false,
-            position: -1,
+            startTurn: true,
+            endTurn: false,
+            position: undefined,
         };
 
         this.searchWhoami();
@@ -151,6 +153,16 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 position: object.position,
             });
         });
+
+        getSocket().on('cardDrawn', (object) => {
+            alert(object.description);
+        });
+
+        getSocket().on('tax', (object) => {
+            alert("You must pay $"+object.amount);
+        });
+
+
     }
 
     startGame() {
@@ -182,13 +194,13 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     displaySlot(e) {
-        console.log(e.target);
         if (e.target.innerText === this.state.slotName) {
             this.setState({
                 slotClicked: !this.state.slotClicked
             });
         } else {
             let nb = "";
+            console.log(nb);
             for (let i = 4; i < e.target.id.length; i++) {nb += e.target.id[i];}
             this.setState({
                 slotClicked: true,
@@ -203,7 +215,6 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     displaySlotImage(e) {
-        console.log(e.target);
         if (e.target.alt === this.state.slotName) {
             this.setState({
                 slotClicked: !this.state.slotClicked
@@ -211,6 +222,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         } else {
             let nb = "";
             for (let i = 4; i < e.target.id.length; i++) {nb += e.target.id[i];}
+            console.log(nb);
             this.setState({
                 slotClicked: true,
                 indexClicked: parseInt(nb),
@@ -330,7 +342,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             messages: [message, ...this.state.messages],
             unreadMessages: true,
             currentSystemMessageId: this.state.currentSystemMessageId - 1,
-            isRolled: true,
+            startTurn: false,
         });
         for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
             this.displayPawns(i);
@@ -340,13 +352,33 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     buy() {
         getSocket().emit('buy', this.state.gameId);
         this.setState({
-            isRolled: false,
-            position: -1,
+            endTurn: true,
         });
     }
 
     doNotBuy() {
         getSocket().emit('doNotBuy', this.state.gameId);
+        this.setState({
+            endTurn: true,
+        });
+    }
+
+    endTurn() {
+        getSocket().emit('nextPlayer', this.state.gameId);  
+        this.setState({
+            startTurn: true,
+            endTurn: false,
+            position: undefined
+        });
+    }
+
+    declareBankruptcy() {
+        getSocket().emit('declareBankruptcy', this.state.gameId);
+        this.setState({
+            startTurn: true,
+            endTurn: false,
+            position: undefined
+        });
     }
 
     render(): React.ReactNode {
@@ -385,12 +417,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                 <td className="centerDisplay" colSpan={3} rowSpan={5}>
                                     {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button onClick={this.startGame.bind(this)}>Start the game</button>}
                                     {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}
-                                    {!this.state.slotClicked && this.state.gameInfos.started && !this.state.isRolled && this.isYourTurn(this.state.gameInfos.players) && <button onClick={this.rollDices.bind(this)}>Roll the dices</button>}
-                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.isRolled &&
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.startTurn && this.isYourTurn(this.state.gameInfos.players) && <button onClick={this.rollDices.bind(this)}>Roll the dices</button>}
+                                    {!this.state.slotClicked && this.state.gameInfos.started && !this.state.startTurn && !this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) && (this.state.gameInfos.slots[this.state.position].price !== 0) &&
                                     <div className="slotDisplay">
                                         <p>Do you want to buy {this.state.gameInfos.slots[this.state.position].name} for ${this.state.gameInfos.slots[this.state.position].price} ?</p>
                                         <button onClick={this.buy.bind(this)}>Yes</button>
                                         <button onClick={this.doNotBuy.bind(this)}>No</button>
+                                    </div>}
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) &&
+                                    <div className="slotDisplay">
+                                        <p>Which action do you want to perform ?</p>
+                                        <button>Manage properties</button>
+                                        <button onClick={this.endTurn.bind(this)}>End your turn</button>
+                                        <button onClick={this.declareBankruptcy.bind(this)}>Declare bankruptcy</button>
                                     </div>}
                                     {!this.state.slotClicked && this.state.gameInfos.started && !this.isYourTurn(this.state.gameInfos.players) &&
                                     <img className="imageCenter" src="/UAPoly.png" alt="UAPoly"/>}    

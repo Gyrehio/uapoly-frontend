@@ -217,6 +217,7 @@ class NewGameDialog extends Component<NewGameDialogProps, NewGameDialogState> {
                 } else {
                     this.handleClose();
                     alert("Game is created !");
+                    window.location.reload();
                 }
             }
         };

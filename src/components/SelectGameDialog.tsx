@@ -120,6 +120,7 @@ class SelectGameDialog extends Component<SelectGameDialogProps, SelectGameDialog
                 this.update();
                 this.handleClose();
                 alert(game["message"]);
+                window.location.reload();
             }
         }
 
