@@ -6,6 +6,7 @@ import remarkBreaks from "remark-breaks";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
 import { getSocket } from "../GlobalSocket.ts";
+import { Socket } from "socket.io-client";
 
 type GamePageProps = {};
 
@@ -28,6 +29,9 @@ type GamePageState = {
     messageRecipient: string,
     showEmojiPicker: boolean,
     currentSystemMessageId: number,
+    diceRolls: number[],
+    isRolled: boolean,
+    position: number,
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -63,6 +67,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             messageRecipient: "*", // * = everyone, otherwise the login of the recipient
             showEmojiPicker: false,
             currentSystemMessageId: -2,
+            diceRolls:[],
+            isRolled: false,
+            position: -1,
         };
 
         this.searchWhoami();
@@ -72,7 +79,6 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('joined', (game) => {
-            console.log(game);
             this.setState({
                 gameInfos: game
             });
@@ -88,13 +94,11 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('player-connected', (object) => {
-            console.log(object);
             let message = {
                 id: this.state.currentSystemMessageId,
                 sender: "System",
                 content: "**" + object.accountLogin + "** has joined the game."
             };
-            console.log(message.content);
             this.setState({
                 messages: [message, ...this.state.messages],
                 unreadMessages: true,
@@ -108,7 +112,6 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 sender: "System",
                 content: "**" + object.accountLogin + "** has left the game."
             };
-            console.log(message.content);
             this.setState({
                 messages: [message, ...this.state.messages],
                 unreadMessages: true,
@@ -120,6 +123,32 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             this.setState({
                 messages: [message, ...this.state.messages],
                 unreadMessages: true,
+            });
+        });
+
+        getSocket().on('startOfTurn', (object) => {
+            let message = {
+                id: this.state.currentSystemMessageId,
+                sender: "System",
+                content: "It's your turn, **" + object.accountLogin + "** !"
+            };
+            this.setState({
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1
+            });
+        });
+
+        getSocket().on('diceRoll', (object) => {
+            this.setState({
+                diceRolls: [object.dices[0], object.dices[1]]
+            });
+        });
+
+        getSocket().on('landedOnUnowned', (object) => {
+            console.log(object);
+            this.setState({
+                position: object.position,
             });
         });
     }
@@ -143,8 +172,6 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     displayStartButton(players): boolean {
-        console.log(players.find);
-
         const player = players.find((p: any) => p.accountLogin === this.state.whoami);
         if (player && player.isGameMaster === true) {
             return true;
@@ -155,14 +182,17 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     displaySlot(e) {
+        console.log(e.target);
         if (e.target.innerText === this.state.slotName) {
             this.setState({
                 slotClicked: !this.state.slotClicked
             });
         } else {
+            let nb = "";
+            for (let i = 4; i < e.target.id.length; i++) {nb += e.target.id[i];}
             this.setState({
                 slotClicked: true,
-                indexClicked: parseInt(e.target.id),
+                indexClicked: parseInt(nb),
                 slotName: e.target.innerText,
                 slotType: (Array.from(e.target.classList) as string[]).find((x) => {
                     if (x.startsWith("slot-")) return true
@@ -173,14 +203,17 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     displaySlotImage(e) {
+        console.log(e.target);
         if (e.target.alt === this.state.slotName) {
             this.setState({
                 slotClicked: !this.state.slotClicked
             });
         } else {
+            let nb = "";
+            for (let i = 4; i < e.target.id.length; i++) {nb += e.target.id[i];}
             this.setState({
                 slotClicked: true,
-                indexClicked: parseInt(e.target.id),
+                indexClicked: parseInt(nb),
                 slotName: e.target.alt,
                 slotType: (Array.from(e.target.classList) as string[]).find((x) => {
                     if (x.startsWith("slot-")) return true
@@ -197,7 +230,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         let selector = document.querySelector(`td#slot${nb}`);
         var cpt = 0;
         for (let player of this.state.gameInfos.players) {
-            if (player.currentSlotIndex == nb) {
+            if (player.currentSlotIndex === nb) {
                 let img = document.createElement("img");
                 img.classList.add("pion");
                 img.classList.add(`player${cpt+1}`);
@@ -275,6 +308,47 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
     }
 
+    isYourTurn(players) {
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].accountLogin === this.state.whoami) {
+                if (this.state.gameInfos.currentPlayerIndex === i) {
+                    return true;
+                } else return false;
+            }
+        }
+        return false;
+    }
+
+    rollDices() {
+        let message = {
+            unsafe: true,
+            id: this.state.currentSystemMessageId,
+            sender: "System",
+            content: "**" + this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].accountLogin + "** made a " + this.state.diceRolls[0] + " and a " + this.state.diceRolls[1] + " !"
+        };
+        this.setState({
+            messages: [message, ...this.state.messages],
+            unreadMessages: true,
+            currentSystemMessageId: this.state.currentSystemMessageId - 1,
+            isRolled: true,
+        });
+        for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+            this.displayPawns(i);
+        }
+    };
+
+    buy() {
+        getSocket().emit('buy', this.state.gameId);
+        this.setState({
+            isRolled: false,
+            position: -1,
+        });
+    }
+
+    doNotBuy() {
+        getSocket().emit('doNotBuy', this.state.gameId);
+    }
+
     render(): React.ReactNode {
         return(
             <>
@@ -309,11 +383,17 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                 <td id="slot17" className="boardSlot chest"><img id="slot17" onClick={this.displaySlotImage.bind(this)} className="slotImage slot-chest" src="/chest.svg" alt={`${this.state.gameInfos.slots[17].name}`}/></td>
                                 <td className="void" colSpan={3} rowSpan={5}/>
                                 <td className="centerDisplay" colSpan={3} rowSpan={5}>
-                                    {!this.state.slotClicked && this.state.gameInfos.started &&
-                                    <img className="imageCenter" src="/UAPoly.png" alt="UAPoly"/>}
-
                                     {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button onClick={this.startGame.bind(this)}>Start the game</button>}
-                                    {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}    
+                                    {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}
+                                    {!this.state.slotClicked && this.state.gameInfos.started && !this.state.isRolled && this.isYourTurn(this.state.gameInfos.players) && <button onClick={this.rollDices.bind(this)}>Roll the dices</button>}
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.isRolled &&
+                                    <div className="slotDisplay">
+                                        <p>Do you want to buy {this.state.gameInfos.slots[this.state.position].name} for ${this.state.gameInfos.slots[this.state.position].price} ?</p>
+                                        <button onClick={this.buy.bind(this)}>Yes</button>
+                                        <button onClick={this.doNotBuy.bind(this)}>No</button>
+                                    </div>}
+                                    {!this.state.slotClicked && this.state.gameInfos.started && !this.isYourTurn(this.state.gameInfos.players) &&
+                                    <img className="imageCenter" src="/UAPoly.png" alt="UAPoly"/>}    
 
                                     {this.state.slotClicked && this.state.slotType === "slot-property" && 
                                     <div className="slotDisplay">
