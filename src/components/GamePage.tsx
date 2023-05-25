@@ -137,14 +137,35 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             this.setState({
                 messages: [message, ...this.state.messages],
                 unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1
+                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                startTurn: true,
+                endTurn: false,
+                position: undefined
             });
         });
 
-        getSocket().on('diceRoll', (object) => {
+        getSocket().on('endOfTurn', (object) => {
             this.setState({
-                diceRolls: [object.dices[0], object.dices[1]]
+                endTurn: true
             });
+        })
+
+        getSocket().on('diceRoll', (object) => {
+            let message = {
+                id: this.state.currentSystemMessageId,
+                sender: "System",
+                content: "**" + this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].accountLogin + "** made a " + object.dices[0] + " and a " + object.dices[1] + " !"
+            };
+            this.setState({
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                startTurn: false,
+                position: this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].currentSlotIndex
+            });
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
         });
 
         getSocket().on('landedOnUnowned', (object) => {
@@ -152,17 +173,68 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             this.setState({
                 position: object.position,
             });
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
+        });
+
+        getSocket().on('propertyBought', (object) => {
+            let message = {
+                id: this.state.currentSystemMessageId,
+                sender: "System",
+                content: "**" + object.accountLogin + "** just bought **" + this.state.gameInfos.slots[object.slotIndex].name +"** !"
+            };
+            this.setState({
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1
+            });
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
+        });
+
+        getSocket().on('paymentSucceeded', (object) => {
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            };
         });
 
         getSocket().on('cardDrawn', (object) => {
-            alert(object.description);
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
+            let message = {
+                id: this.state.currentSystemMessageId,
+                sender: "System",
+                content: "**" + object.accountLogin + '** just drew a card : \n' + object.description,
+            };
+            this.setState({
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+            });
         });
 
         getSocket().on('tax', (object) => {
-            alert("You must pay $"+object.amount);
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
+            let message = {
+                id: this.state.currentSystemMessageId,
+                sender: "System",
+                content: "**" + object.accountLogin + '** has to pay a tax of $' + object.amount,
+            };
+            this.setState({
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+            });
         });
 
-
+        getSocket().on('shouldRollDices', (object) => {
+            this.forceUpdate();
+        })
     }
 
     startGame() {
@@ -332,21 +404,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     rollDices() {
-        let message = {
-            unsafe: true,
-            id: this.state.currentSystemMessageId,
-            sender: "System",
-            content: "**" + this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].accountLogin + "** made a " + this.state.diceRolls[0] + " and a " + this.state.diceRolls[1] + " !"
-        };
-        this.setState({
-            messages: [message, ...this.state.messages],
-            unreadMessages: true,
-            currentSystemMessageId: this.state.currentSystemMessageId - 1,
-            startTurn: false,
-        });
-        for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-            this.displayPawns(i);
-        }
+        getSocket().emit('rollDices', this.state.gameId);
     };
 
     buy() {
@@ -370,6 +428,10 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             endTurn: false,
             position: undefined
         });
+    }
+
+    displayRollDice(players): boolean {
+        return (this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].accountLogin === this.state.whoami);
     }
 
     declareBankruptcy() {
@@ -418,7 +480,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                     {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button onClick={this.startGame.bind(this)}>Start the game</button>}
                                     {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}
                                     {!this.state.slotClicked && this.state.gameInfos.started && this.state.startTurn && this.isYourTurn(this.state.gameInfos.players) && <button onClick={this.rollDices.bind(this)}>Roll the dices</button>}
-                                    {!this.state.slotClicked && this.state.gameInfos.started && !this.state.startTurn && !this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) && (this.state.gameInfos.slots[this.state.position].price !== 0) &&
+                                    {!this.state.slotClicked && this.state.gameInfos.started && !this.state.startTurn && !this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) && (!this.state.gameInfos.slots[this.state.position].owner) &&
                                     <div className="slotDisplay">
                                         <p>Do you want to buy {this.state.gameInfos.slots[this.state.position].name} for ${this.state.gameInfos.slots[this.state.position].price} ?</p>
                                         <button onClick={this.buy.bind(this)}>Yes</button>

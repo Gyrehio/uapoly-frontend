@@ -86,6 +86,7 @@ class JoinGameDialog extends Component<JoinGameDialogProps, JoinGameDialogState>
                     });
                     alert(user["message"]);
                 } else {
+                    this.handleClose();
                     alert("Game is joined !");
                     window.location.reload();
                 }
