@@ -96,6 +96,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('player-connected', (object) => {
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
             let message = {
                 id: this.state.currentSystemMessageId,
                 sender: "System",
@@ -129,6 +132,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('startOfTurn', (object) => {
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
             let message = {
                 id: this.state.currentSystemMessageId,
                 sender: "System",
@@ -145,12 +151,18 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('endOfTurn', (object) => {
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
             this.setState({
                 endTurn: true
             });
         })
 
         getSocket().on('diceRoll', (object) => {
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
             let message = {
                 id: this.state.currentSystemMessageId,
                 sender: "System",
@@ -163,22 +175,21 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 startTurn: false,
                 position: this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].currentSlotIndex
             });
-            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
-            }
         });
 
         getSocket().on('landedOnUnowned', (object) => {
-            console.log(object);
-            this.setState({
-                position: object.position,
-            });
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
             }
+            this.setState({
+                position: object.position,
+            });
         });
 
         getSocket().on('propertyBought', (object) => {
+            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                this.displayPawns(i);
+            }
             let message = {
                 id: this.state.currentSystemMessageId,
                 sender: "System",
@@ -189,9 +200,6 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 unreadMessages: true,
                 currentSystemMessageId: this.state.currentSystemMessageId - 1
             });
-            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
-            }
         });
 
         getSocket().on('paymentSucceeded', (object) => {
@@ -312,17 +320,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             e.remove();
         });
         let selector = document.querySelector(`td#slot${nb}`);
-        var cpt = 0;
-        for (let player of this.state.gameInfos.players) {
-            if (player.currentSlotIndex === nb) {
-                let img = document.createElement("img");
-                img.classList.add("pion");
-                img.classList.add(`player${cpt+1}`);
-                img.src = `/api/user/picture/${player.accountLogin}`;
-                img.alt = player.accountLogin;
-                selector.appendChild(img);
+        if (selector) {
+            var cpt = 0;
+            for (let player of this.state.gameInfos.players) {
+                if (player.currentSlotIndex === nb) {
+                    let img = document.createElement("img");
+                    img.classList.add("pion");
+                    img.classList.add(`player${cpt+1}`);
+                    img.src = `/api/user/picture/${player.accountLogin}`;
+                    img.alt = player.accountLogin;
+                    selector.appendChild(img);
+                }
+                cpt++;
             }
-            cpt++;
         }
     }
 
@@ -443,6 +453,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
     }
 
+    dicesInJail() {
+        getSocket().emit('escapeJail', {"gameId": this.state.gameId, "meanOfEscape": "ROLL"});
+    }
+
+    payTheBail() {
+        getSocket().emit('escapeJail', {"gameId": this.state.gameId, "meanOfEscape": "PAY"});
+    }
+
+    useFreeFromJailCard() {
+        getSocket().emit('escapeJail', {"gameId": this.state.gameId, "meanOfEscape": "USE_CARD"});
+
+    }
+
     render(): React.ReactNode {
         return(
             <>
@@ -478,14 +501,26 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                 <td className="void" colSpan={3} rowSpan={5}/>
                                 <td className="centerDisplay" colSpan={3} rowSpan={5}>
                                     {!this.state.slotClicked && !this.state.gameInfos.started && this.displayStartButton(this.state.gameInfos.players) && <button onClick={this.startGame.bind(this)}>Start the game</button>}
+
                                     {!this.state.slotClicked && !this.state.gameInfos.started && !this.displayStartButton(this.state.gameInfos.players) && <p>Waiting for the game master to start the game...</p>}
-                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.startTurn && this.isYourTurn(this.state.gameInfos.players) && <button onClick={this.rollDices.bind(this)}>Roll the dices</button>}
+                                    
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.startTurn && this.isYourTurn(this.state.gameInfos.players) && !this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].inJail && <button onClick={this.rollDices.bind(this)}>Roll the dices</button>}
+                                    
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.startTurn && this.isYourTurn(this.state.gameInfos.players) && this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].inJail &&
+                                    <div className="slotDisplay">
+                                        <p>You're in Jail. What will you do ?</p>
+                                        <button onClick={this.dicesInJail.bind(this)}>Try to get a double</button>
+                                        <button onClick={this.payTheBail.bind(this)}>Pay your bail</button>
+                                        {this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].outOfJailCards > 0 && <button onClick={this.useFreeFromJailCard.bind(this)}>Use a "Get out of Jail Free" card</button>}
+                                    </div>}
+
                                     {!this.state.slotClicked && this.state.gameInfos.started && !this.state.startTurn && !this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) && (!this.state.gameInfos.slots[this.state.position].owner) &&
                                     <div className="slotDisplay">
                                         <p>Do you want to buy {this.state.gameInfos.slots[this.state.position].name} for ${this.state.gameInfos.slots[this.state.position].price} ?</p>
                                         <button onClick={this.buy.bind(this)}>Yes</button>
                                         <button onClick={this.doNotBuy.bind(this)}>No</button>
                                     </div>}
+                                    
                                     {!this.state.slotClicked && this.state.gameInfos.started && this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) &&
                                     <div className="slotDisplay">
                                         <p>Which action do you want to perform ?</p>
@@ -493,6 +528,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                         <button onClick={this.endTurn.bind(this)}>End your turn</button>
                                         <button onClick={this.declareBankruptcy.bind(this)}>Declare bankruptcy</button>
                                     </div>}
+                                    
                                     {!this.state.slotClicked && this.state.gameInfos.started && !this.isYourTurn(this.state.gameInfos.players) &&
                                     <img className="imageCenter" src="/UAPoly.png" alt="UAPoly"/>}    
 
