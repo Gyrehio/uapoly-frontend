@@ -7,6 +7,7 @@ import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
 import { getSocket } from "../GlobalSocket.ts";
 import { Socket } from "socket.io-client";
+import ManagePropertiesDialog from "./ManagePropertiesDialog.tsx";
 
 type GamePageProps = {};
 
@@ -553,7 +554,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                     {!this.state.slotClicked && this.state.gameInfos.started && this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) &&
                                     <div className="slotDisplay">
                                         <p>Which action do you want to perform ?</p>
-                                        <button>Manage properties</button>
+                                        {/* <button>Manage properties</button> */}
+                                        <ManagePropertiesDialog ownedProperties={this.state.gameInfos.slots.filter((p) => p.owner?.accountLogin === this.state.whoami).map((p) => Object.assign({}, p))} gameId={this.state.gameId}></ManagePropertiesDialog>
                                         <button onClick={this.endTurn.bind(this)}>End your turn</button>
                                         <button onClick={this.declareBankruptcy.bind(this)}>Declare bankruptcy</button>
                                     </div>}
