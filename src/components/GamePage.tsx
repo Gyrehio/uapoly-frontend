@@ -92,12 +92,14 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             });
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
         });
 
         getSocket().on('player-connected', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             let message = {
                 id: this.state.currentSystemMessageId,
@@ -134,6 +136,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('startOfTurn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             let message = {
                 id: this.state.currentSystemMessageId,
@@ -153,6 +156,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('endOfTurn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             this.setState({
                 endTurn: true
@@ -162,6 +166,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('diceRoll', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             let message = {
                 id: this.state.currentSystemMessageId,
@@ -180,6 +185,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('landedOnUnowned', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             this.setState({
                 position: object.position,
@@ -189,6 +195,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('propertyBought', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             let message = {
                 id: this.state.currentSystemMessageId,
@@ -205,12 +212,14 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('paymentSucceeded', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             };
         });
 
         getSocket().on('cardDrawn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             let message = {
                 id: this.state.currentSystemMessageId,
@@ -227,6 +236,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         getSocket().on('tax', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
+                this.setSlotColor(i);
             }
             let message = {
                 id: this.state.currentSystemMessageId,
@@ -321,7 +331,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
         let selector = document.querySelector(`td#slot${nb}`);
         if (selector) {
-            var cpt = 0;
+            let cpt = 0;
             for (let player of this.state.gameInfos.players) {
                 if (player.currentSlotIndex === nb) {
                     let img = document.createElement("img");
@@ -330,6 +340,25 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     img.src = `/api/user/picture/${player.accountLogin}`;
                     img.alt = player.accountLogin;
                     selector.appendChild(img);
+                }
+                cpt++;
+            }
+        }
+    }
+
+    setSlotColor(nb: number) {
+        let selector = document.querySelector(`td#slot${nb}`);
+        if (selector) {
+            let cpt = 0;
+            let found = false;
+            for (let player of this.state.gameInfos.players) {
+                if (this.state.gameInfos.slots[nb].owner) {
+                    if (this.state.gameInfos.slots[nb].owner.accountLogin === player.accountLogin) {
+                        selector.classList.add(`owned${cpt+1}`);
+                        found = true;
+                    }
+                } else if (!found) {
+                    selector.classList.remove(`owned${cpt+1}`);
                 }
                 cpt++;
             }

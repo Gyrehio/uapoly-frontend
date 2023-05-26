@@ -382,9 +382,17 @@ div.optionsHolder input[type="button"] {
     border-color: red;
 }
 
+.owned1 {
+    border-color: red;
+}
+
 .player2 {
     bottom: 45px;
     left: 23px;
+    border-color: blue;
+}
+
+.owned2 {
     border-color: blue;
 }
 
@@ -394,9 +402,17 @@ div.optionsHolder input[type="button"] {
     border-color: yellow;
 }
 
+.owned3 {
+    border-color: yellow;
+}
+
 .player4 {
     bottom: 23px;
     left: 12px;
+    border-color: green;
+}
+
+.owned4 {
     border-color: green;
 }
 
@@ -406,9 +422,17 @@ div.optionsHolder input[type="button"] {
     border-color: orange;
 }
 
+.owned5 {
+    border-color: orange;
+}
+
 .player6 {
     bottom: 1px;
     left: 1px;
+    border-color: rgb(61, 197, 250);
+}
+
+.owned6 {
     border-color: rgb(61, 197, 250);
 }
 
@@ -418,9 +442,17 @@ div.optionsHolder input[type="button"] {
     border-color: purple;
 }
 
+.owned7 {
+    border-color: purple ;
+}
+
 .player8 {
     bottom: 1px;
     left: 45px;
+    border-color: grey;
+}
+
+.owned8 {
     border-color: grey;
 }
 
