@@ -1,20 +1,159 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Slider, Switch } from "@mui/material";
 import React from "react";
 import { ChangeEvent } from "react";
+import { getSocket } from "../GlobalSocket";
 
+/**
+ * A dialog that allows the player to manage their properties.
+ */
 export default function ManagePropertiesDialog(props): JSX.Element {
-    const [open, setOpen] = React.useState(false);
+    const [state, setState] = React.useState({
+        /**
+         * Whether the dialog is open.
+         */
+        open: false,
+
+        /**
+         * The properties owned by the player.
+         */
+        properties: props.ownedProperties.map((p) => {
+            return {
+                ...p,
+                currentState: p.state,
+            };
+        }),
+        
+        /**
+         * The properties that have been updated.
+         */
+        updated: [],
+
+        /**
+         * The debt that the player has to pay. Can be negative, if the bank owes the player money.
+         */
+        debt: 0,
+    });
+
+    /**
+     * Builds a JSX element that allows the player to manage a buildable property.
+     * @param property The property to manage.
+     * @returns A JSX element that allows the player to manage the property.
+     */
+    const BuildableProperty = (property) => {   
+        const setMortgaged = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+            property.state = checked ? "MORTGAGED" : "OWNED";
+
+            state.updated[property.position] = property;
+            setState({ ...state, properties: state.properties, updated: state.updated, debt: state.debt + calculateMortagedDeltaDebt(property, checked) });
+        };
+    
+        const setNumberOfBuildings = (_e: Event, value: number) => {
+            const deltaDebt = (value - property.numberOfBuildings) * property.buildingPrice;
+            property.numberOfBuildings = value;
+
+            state.updated[property.position] = property;
+            setState({ ...state, properties: state.properties, updated: state.updated, debt: state.debt + deltaDebt });
+        };
+    
+        // Marks on the slider.
+        const marks = [
+            {
+                value: 0,
+                label: "None",
+            },
+            {
+                value: 1,
+                label: "1",
+            },
+            {
+                value: 2,
+                label: "2",
+            },
+            {
+                value: 3,
+                label: "3",
+            },
+            {
+                value: 4,
+                label: "4",
+            },
+            {
+                value: 5,
+                label: "Hotel",
+            },
+        ];
+    
+        return (
+            <div>
+                <DialogContentText>{ property.name } / ${ property.buildingPrice } per building</DialogContentText>
+                <FormControlLabel control={<Switch onChange={setMortgaged} checked={property.state !== "OWNED"}/>} label="Mortgaged"/>
+                <Slider value={property.numberOfBuildings} onChangeCommitted={setNumberOfBuildings} min={0} max={5} step={1} valueLabelDisplay="auto" marks={marks} />
+            </div>
+        );
+    };
+    
+    /**
+     * Builds a JSX element that allows the player to manage a train property.
+     * @param property The property to manage.
+     * @returns A JSX element that allows the player to manage the property.
+     */
+    const TrainProperty = (property) => {
+        const setMortgaged = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+            property.state = checked ? "MORTGAGED" : "OWNED";
+
+            state.updated[property.position] = property;
+            setState({ ...state, properties: state.properties, updated: state.updated, debt: state.debt + calculateMortagedDeltaDebt(property, checked) });
+        };
+    
+        return (
+            <div>
+                <DialogContentText>{ property.name }</DialogContentText>
+                <FormControlLabel control={<Switch onChange={setMortgaged} checked={property.state !== "OWNED"}/>} label="Mortgaged"/>
+            </div>
+        );
+    };
+    
+    /**
+     * Builds a JSX element that allows the player to manage a utility property.
+     * @param property The property to manage.
+     * @returns A JSX element that allows the player to manage the property.
+     */
+    const UtilityProperty = (property) => {  
+        const setMortgaged = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
+            property.state = checked ? "MORTGAGED" : "OWNED";
+
+            state.updated[property.position] = property;
+            setState({ ...state, properties: state.properties, updated: state.updated, debt: state.debt + calculateMortagedDeltaDebt(property, checked) });
+        };
+    
+        return (
+            <div>
+                <DialogContentText>{ property.name }</DialogContentText>
+                <FormControlLabel control={<Switch onChange={setMortgaged} checked={property.state !== "OWNED"}/>} label="Mortgaged"/>
+            </div>
+        );
+    };
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setState({ ...state, open: true });
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setState({ ...state, open: false });
     };
 
     const handleFinish = () => {
-        
+        getSocket().emit('manageProperties', {
+            gameId: props.gameId,
+            properties: state.updated.filter((p) => p !== null && p !== undefined).map((p) => {
+                return {
+                    position: p.position,
+                    newState: p.state,
+                    newNumberOfBuildings: p.numberOfBuildings,
+                }
+            }),
+        });
+
         handleClose();
     };
 
@@ -22,7 +161,7 @@ export default function ManagePropertiesDialog(props): JSX.Element {
     const trainStations = [];
     const utilities = [];
 
-    props.ownedProperties.forEach((property) => {
+    state.properties.forEach((property) => {
         if(property.propertyRent) {
             buildableProperties.push(BuildableProperty(property));
         } else if(property.trainRent) {
@@ -68,8 +207,8 @@ export default function ManagePropertiesDialog(props): JSX.Element {
         <div>
             <button onClick={handleClickOpen}>Manage Properties</button>
 
-            <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-                <DialogTitle>Manage Properties</DialogTitle>
+            <Dialog open={state.open} onClose={handleClose} maxWidth="md" fullWidth>
+                <DialogTitle>Manage Properties - Total: ${ state.debt }</DialogTitle>
                 <DialogContent>
                     { buildablePropertiesDisplay }
                     { trainStationsDisplay }
@@ -84,90 +223,20 @@ export default function ManagePropertiesDialog(props): JSX.Element {
     );
 }
 
-function BuildableProperty(property) {
-    const [state, setState] = React.useState({
-        state: property.state,
-        numberOfBuildings: property.numberOfBuildings,
-    });
+/**
+ * Calculates the delta debt for a morgagable property.
+ * @param property The property to calculate the delta debt for.
+ * @param checked Whether the property is mortgaged or not.
+ * @returns The delta debt for the property.
+ */
+function calculateMortagedDeltaDebt(property, checked) {
+    // Make sure to remove the debt if the property state does not change.
+    let deltaDebt = 0;
+    if(property.state !== property.currentState) {
+        deltaDebt = checked ? Math.ceil(property.price / 2) : - Math.ceil(property.price / 2 + property.price / 10);
+    } else {
+        deltaDebt = property.currentState === "MORTGAGED" ? Math.ceil(property.price / 2 + property.price / 10) : - Math.ceil(property.price / 2);
+    }
 
-    const setMortgaged = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        property.state = checked ? "MORTGAGED" : "OWNED";
-        setState({ ...state, state: property.state });
-    };
-
-    const setNumberOfBuildings = (_e: Event, value: number) => {
-        property.numberOfBuildings = value;
-        setState({ ...state, numberOfBuildings: property.numberOfBuildings });
-    };
-
-    const marks = [
-        {
-            value: 0,
-            label: "None",
-        },
-        {
-            value: 1,
-            label: "1",
-        },
-        {
-            value: 2,
-            label: "2",
-        },
-        {
-            value: 3,
-            label: "3",
-        },
-        {
-            value: 4,
-            label: "4",
-        },
-        {
-            value: 5,
-            label: "Hotel",
-        },
-    ];
-
-    return (
-        <div>
-            <DialogContentText>{ property.name }</DialogContentText>
-            <FormControlLabel control={<Switch onChange={setMortgaged} checked={state.state !== "OWNED"}/>} label="Mortgaged"/>
-            <Slider value={state.numberOfBuildings} onChangeCommitted={setNumberOfBuildings} min={0} max={5} step={1} valueLabelDisplay="auto" marks={marks} />
-        </div>
-    );
-}
-
-function TrainProperty(property) {
-    const [state, setState] = React.useState({
-        state: property.state,
-    });
-
-    const setMortgaged = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        property.state = checked ? "MORTGAGED" : "OWNED";
-        setState({... state, state: property.state });
-    };
-
-    return (
-        <div>
-            <DialogContentText>{ property.name }</DialogContentText>
-            <FormControlLabel control={<Switch onChange={setMortgaged} checked={state.state !== "OWNED"}/>} label="Mortgaged"/>
-        </div>
-    );
-}
-
-function UtilityProperty(property) {
-    const [state, setState] = React.useState({
-        state: property.state,
-    });
-
-    const setMortgaged = (_e: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        property.state = checked ? "MORTGAGED" : "OWNED";
-        setState({... state, state: property.state });
-    };
-
-    return (
-        <div>
-            <DialogContentText>{ property.name }</DialogContentText>
-            <FormControlLabel control={<Switch onChange={setMortgaged} checked={state.state !== "OWNED"}/>} label="Mortgaged"/>
-        </div>
-    );
+    return deltaDebt;
 }
