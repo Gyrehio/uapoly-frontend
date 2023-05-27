@@ -6,7 +6,6 @@ import remarkBreaks from "remark-breaks";
 import Footer from "./Footer.tsx";
 import UserHeader from "./UserHeader.tsx";
 import { getSocket } from "../GlobalSocket.ts";
-import { Socket } from "socket.io-client";
 import ManagePropertiesDialog from "./ManagePropertiesDialog.tsx";
 
 type GamePageProps = {};
@@ -85,32 +84,39 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             this.setState({
                 gameInfos: game
             });
+            getSocket().emit('update', this.state.gameId);
         });
 
         getSocket().on('update', (game) => {
-            this.setState({
-                gameInfos: game
-            });
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
+                this.forceUpdate();
+            };
+            Promise.resolve().then(() => {
+                this.setState({
+                    gameInfos: game
+                });
+            });
         });
 
         getSocket().on('player-connected', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            let message = {
-                id: this.state.currentSystemMessageId,
-                sender: "System",
-                content: "**" + object.accountLogin + "** has joined the game."
+                this.forceUpdate();
             };
-            this.setState({
-                messages: [message, ...this.state.messages],
-                unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+            Promise.resolve().then(() => {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.accountLogin + "** has joined the game."
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                });
             });
         });
 
@@ -138,19 +144,22 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            let message = {
-                id: this.state.currentSystemMessageId,
-                sender: "System",
-                content: "It's your turn, **" + object.accountLogin + "** !"
+                this.forceUpdate();
             };
-            this.setState({
-                messages: [message, ...this.state.messages],
-                unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1,
-                startTurn: true,
-                endTurn: false,
-                position: undefined
+            Promise.resolve().then(() => {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "It's your turn, **" + object.accountLogin + "** !"
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                    startTurn: true,
+                    endTurn: false,
+                    position: undefined
+                });
             });
         });
 
@@ -158,9 +167,12 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            this.setState({
-                endTurn: true
+                this.forceUpdate();
+            };
+            Promise.resolve().then(() => {
+                this.setState({
+                    endTurn: true
+                });
             });
         })
 
@@ -168,28 +180,34 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            let message = {
-                id: this.state.currentSystemMessageId,
-                sender: "System",
-                content: "**" + this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].accountLogin + "** made a " + object.dices[0] + " and a " + object.dices[1] + " !"
+                this.forceUpdate();
             };
-            this.setState({
-                messages: [message, ...this.state.messages],
-                unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1,
-                startTurn: false,
-                position: this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].currentSlotIndex
+            Promise.resolve().then(() => {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].accountLogin + "** made a " + object.dices[0] + " and a " + object.dices[1] + ' !'
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                    startTurn: false,
+                    position: this.state.gameInfos.players[this.state.gameInfos.currentPlayerIndex].currentSlotIndex
+                });
             });
         });
 
         getSocket().on('landedOnUnowned', (object) => {
-            for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
-                this.setSlotColor(i);
-            }
             this.setState({
                 position: object.position,
+            });
+            Promise.resolve().then(() => {
+                for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
+                    this.displayPawns(i);
+                    this.setSlotColor(i);
+                    this.forceUpdate();
+                };
             });
         });
 
@@ -197,16 +215,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            let message = {
-                id: this.state.currentSystemMessageId,
-                sender: "System",
-                content: "**" + object.accountLogin + "** just bought **" + this.state.gameInfos.slots[object.slotIndex].name +"** !"
+                this.forceUpdate();
             };
-            this.setState({
-                messages: [message, ...this.state.messages],
-                unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1
+            Promise.resolve().then(() => {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.accountLogin + "** just bought **" + this.state.gameInfos.slots[object.slotIndex].name +"** !"
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1
+                });
             });
         });
 
@@ -214,23 +235,59 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
+                this.forceUpdate();
             };
+            Promise.resolve().then(()=> {
+                switch (object.receiver) {
+                    case "bank": break;
+                    case "jackpot": break;
+                    default: {
+                        let message = {
+                            id: this.state.currentSystemMessageId,
+                            sender: "System",
+                            content: "**" + object.sender + "** has to pay $" + object.amount + " to **" + object.receiver + "**"  
+                        };
+                        this.setState({
+                            messages: [message, ...this.state.messages],
+                            unreadMessages: true,
+                            currentSystemMessageId: this.state.currentSystemMessageId - 1
+                        });
+                    }
+                }
+                switch (object.sender) {
+                    case "jackpot": {
+                        let message = {
+                            id: this.state.currentSystemMessageId,
+                            sender: "System",
+                            content: "**" + object.receiver + "** just won $" + object.amount + " thanks to the jackpot !"  
+                        };
+                        this.setState({
+                            messages: [message, ...this.state.messages],
+                            unreadMessages: true,
+                            currentSystemMessageId: this.state.currentSystemMessageId - 1
+                        });
+                    }
+                }
+            });
         });
 
         getSocket().on('cardDrawn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            let message = {
-                id: this.state.currentSystemMessageId,
-                sender: "System",
-                content: "**" + object.accountLogin + '** just drew a card : \n' + object.description,
+                this.forceUpdate();
             };
-            this.setState({
-                messages: [message, ...this.state.messages],
-                unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+            Promise.resolve().then(() => {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.accountLogin + '** just drew a card : \n' + object.description,
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                });
             });
         });
 
@@ -238,22 +295,67 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
-            }
-            let message = {
-                id: this.state.currentSystemMessageId,
-                sender: "System",
-                content: "**" + object.accountLogin + '** has to pay a tax of $' + object.amount,
+                this.forceUpdate();
             };
-            this.setState({
-                messages: [message, ...this.state.messages],
-                unreadMessages: true,
-                currentSystemMessageId: this.state.currentSystemMessageId - 1,
+            Promise.resolve().then(() => {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.accountLogin + '** has to pay a tax of $' + object.amount,
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1,
+                });
             });
         });
 
         getSocket().on('shouldRollDices', (object) => {
             this.forceUpdate();
-        })
+        });
+
+        getSocket().on('bankrupt', (object) => {
+            if (object.quitted) {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.accountLogin + "** has decided to give up !"
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1
+                });
+            } else {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.accountLogin + "** has no more money."
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1
+                });
+            }
+        });
+
+        getSocket().on('game-over', (object) => {
+            if (object.winner !== null) {
+                let message = {
+                    id: this.state.currentSystemMessageId,
+                    sender: "System",
+                    content: "**" + object.winner + "** has won the game ! Congratulations !"
+                };
+                this.setState({
+                    messages: [message, ...this.state.messages],
+                    unreadMessages: true,
+                    currentSystemMessageId: this.state.currentSystemMessageId - 1
+                });
+                alert("Congratulations, " + object.winner + " won the game");
+            }
+        });
     }
 
     startGame() {
@@ -345,6 +447,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 cpt++;
             }
         }
+        return;
     }
 
     setSlotColor(nb: number) {
@@ -364,6 +467,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 cpt++;
             }
         }
+        return;
     }
 
     sendMessage(e) {

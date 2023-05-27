@@ -368,8 +368,8 @@ div.optionsHolder input[type="button"] {
 
 .pion {
     display: block;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border: solid 1px;
     border-radius: 50%;
     position: absolute;
@@ -377,8 +377,8 @@ div.optionsHolder input[type="button"] {
 }
 
 .player1 {
-    bottom: 45px;
-    left: 1px;
+    bottom: 44px;
+    left: 2px;
     border-color: red;
 }
 
@@ -387,7 +387,7 @@ div.optionsHolder input[type="button"] {
 }
 
 .player2 {
-    bottom: 45px;
+    bottom: 44px;
     left: 23px;
     border-color: blue;
 }
@@ -397,8 +397,8 @@ div.optionsHolder input[type="button"] {
 }
 
 .player3 {
-    bottom: 45px;
-    left: 45px;
+    bottom: 44px;
+    left: 44px;
     border-color: yellow;
 }
 
@@ -418,7 +418,7 @@ div.optionsHolder input[type="button"] {
 
 .player5 {
     bottom: 23px;
-    left: 34px;
+    left: 33px;
     border-color: orange;
 }
 
@@ -427,8 +427,8 @@ div.optionsHolder input[type="button"] {
 }
 
 .player6 {
-    bottom: 1px;
-    left: 1px;
+    bottom: 2px;
+    left: 2px;
     border-color: rgb(61, 197, 250);
 }
 
@@ -437,7 +437,7 @@ div.optionsHolder input[type="button"] {
 }
 
 .player7 {
-    bottom: 1px;
+    bottom: 2px;
     left: 23px;
     border-color: purple;
 }
@@ -447,8 +447,8 @@ div.optionsHolder input[type="button"] {
 }
 
 .player8 {
-    bottom: 1px;
-    left: 45px;
+    bottom: 2px;
+    left: 44px;
     border-color: grey;
 }
 
