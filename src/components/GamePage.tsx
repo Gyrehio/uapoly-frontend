@@ -33,6 +33,7 @@ type GamePageState = {
     startTurn: boolean,
     endTurn: boolean,
     position: number | undefined,
+    isInDebt: boolean
 };
 
 class GamePage extends Component<GamePageProps, GamePageState> {
@@ -72,6 +73,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             startTurn: true,
             endTurn: false,
             position: undefined,
+            isInDebt: false
         };
 
         this.searchWhoami();
@@ -232,6 +234,9 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('paymentSucceeded', (object) => {
+            this.setState({
+                isInDebt: false
+            });
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
                 this.displayPawns(i);
                 this.setSlotColor(i);
@@ -356,6 +361,14 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 alert("Congratulations, " + object.winner + " won the game");
             }
         });
+
+        getSocket().on('playerInDebt', (object) => {
+            
+            this.setState({
+                isInDebt: true
+            });
+
+        })
     }
 
     startGame() {
@@ -655,12 +668,19 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                         <button onClick={this.doNotBuy.bind(this)}>No</button>
                                     </div>}
                                     
-                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) &&
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.state.endTurn && this.isYourTurn(this.state.gameInfos.players) && !this.state.isInDebt &&
                                     <div className="slotDisplay">
                                         <p>Which action do you want to perform ?</p>
                                         {/* <button>Manage properties</button> */}
                                         <ManagePropertiesDialog ownedProperties={this.state.gameInfos.slots.filter((p) => p.owner?.accountLogin === this.state.whoami).map((p) => Object.assign({}, p))} gameId={this.state.gameId}></ManagePropertiesDialog>
                                         <button onClick={this.endTurn.bind(this)}>End your turn</button>
+                                        <button onClick={this.declareBankruptcy.bind(this)}>Declare bankruptcy</button>
+                                    </div>}
+
+                                    {!this.state.slotClicked && this.state.gameInfos.started && this.isYourTurn(this.state.gameInfos.players) && this.state.isInDebt &&
+                                    <div className="slotDisplay">
+                                        <p>You have a debt to pay. What action do you want to perform ?</p>
+                                        <ManagePropertiesDialog ownedProperties={this.state.gameInfos.slots.filter((p) => p.owner?.accountLogin === this.state.whoami).map((p) => Object.assign({}, p))} gameId={this.state.gameId}></ManagePropertiesDialog>
                                         <button onClick={this.declareBankruptcy.bind(this)}>Declare bankruptcy</button>
                                     </div>}
                                     
