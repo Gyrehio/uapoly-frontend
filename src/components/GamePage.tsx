@@ -363,12 +363,18 @@ class GamePage extends Component<GamePageProps, GamePageState> {
         });
 
         getSocket().on('playerInDebt', (object) => {
-            
+            let message = {
+                id: this.state.currentSystemMessageId,
+                sender: "System",
+                content: "**" + object.accountLogin + "** has to pay a debt of $" + object.amount
+            }
             this.setState({
-                isInDebt: true
+                isInDebt: true,
+                messages: [message, ...this.state.messages],
+                unreadMessages: true,
+                currentSystemMessageId: this.state.currentSystemMessageId - 1
             });
-
-        })
+        });
     }
 
     startGame() {
