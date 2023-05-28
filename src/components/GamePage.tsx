@@ -619,6 +619,10 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
     }
 
+    retryPayement() {
+        getSocket().emit('retryPayement', this.state.gameId);
+    }
+
     render(): React.ReactNode {
         return(
             <>
@@ -688,6 +692,7 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                                         <p>You have a debt to pay. What action do you want to perform ?</p>
                                         <ManagePropertiesDialog ownedProperties={this.state.gameInfos.slots.filter((p) => p.owner?.accountLogin === this.state.whoami).map((p) => Object.assign({}, p))} gameId={this.state.gameId}></ManagePropertiesDialog>
                                         <button onClick={this.declareBankruptcy.bind(this)}>Declare bankruptcy</button>
+                                        <button onClick={this.retryPayement.bind(this)}>Retry payment</button>
                                     </div>}
                                     
                                     {!this.state.slotClicked && this.state.gameInfos.started && !this.isYourTurn(this.state.gameInfos.players) &&
