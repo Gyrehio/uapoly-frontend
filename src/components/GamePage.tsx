@@ -91,8 +91,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('update', (game) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -104,8 +104,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('player-connected', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -144,8 +144,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('startOfTurn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -167,8 +167,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('endOfTurn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -180,8 +180,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('diceRoll', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -206,8 +206,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
             });
             Promise.resolve().then(() => {
                 for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                    this.displayPawns(i);
                     this.setSlotColor(i);
+                    this.displayPawns(i);
                     this.forceUpdate();
                 };
             });
@@ -215,8 +215,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('propertyBought', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -238,8 +238,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                 isInDebt: false
             });
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(()=> {
@@ -278,8 +278,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('cardDrawn', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -298,8 +298,8 @@ class GamePage extends Component<GamePageProps, GamePageState> {
 
         getSocket().on('tax', (object) => {
             for (let i = 0; i < this.state.gameInfos.slots.length; i++) {
-                this.displayPawns(i);
                 this.setSlotColor(i);
+                this.displayPawns(i);
                 this.forceUpdate();
             };
             Promise.resolve().then(() => {
@@ -470,15 +470,51 @@ class GamePage extends Component<GamePageProps, GamePageState> {
     }
 
     setSlotColor(nb: number) {
+        document.querySelectorAll(`td#slot${nb} .buildingBarContainer`).forEach(e => {
+            e.remove();
+        });
         let selector = document.querySelector(`td#slot${nb}`);
         if (selector) {
             let cpt = 0;
             let found = false;
             for (let player of this.state.gameInfos.players) {
+                // CONTOUR & PROGRESS BAR
                 if (this.state.gameInfos.slots[nb].owner) {
                     if (this.state.gameInfos.slots[nb].owner.accountLogin === player.accountLogin) {
                         selector.classList.add(`owned${cpt+1}`);
                         found = true;
+                        let buildingBar = document.createElement("td");
+                        console.log(this.state.gameInfos.slots[nb].numberOfBuildings);
+                        if (this.state.gameInfos.slots[nb].numberOfBuildings >= 0) {
+                            buildingBar.classList.add("buildingBarContainer");
+                            selector.appendChild(buildingBar);
+                            if (this.state.gameInfos.slots[nb].numberOfBuildings === 1) {
+                                let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
+                                let oneBuild = document.createElement("td");
+                                oneBuild.classList.add("oneBuilding");
+                                select.appendChild(oneBuild);
+                            } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 2) {
+                                let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
+                                let twoBuilds = document.createElement("td");
+                                twoBuilds.classList.add("twoBuildings");
+                                select.appendChild(twoBuilds);
+                            } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 3) {
+                                let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
+                                let threeBuilds = document.createElement("td");
+                                threeBuilds.classList.add("threeBuildings");
+                                select.appendChild(threeBuilds);
+                            } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 4) {
+                                let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
+                                let fourBuilds = document.createElement("td");
+                                fourBuilds.classList.add("fourBuildings");
+                                select.appendChild(fourBuilds);
+                            } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 5) {
+                                let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
+                                let hotel = document.createElement("td");
+                                hotel.classList.add("hotel");
+                                select.appendChild(hotel);
+                            }
+                        }
                     }
                 } else if (!found) {
                     selector.classList.remove(`owned${cpt+1}`);
