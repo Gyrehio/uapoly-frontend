@@ -464,45 +464,35 @@ div.optionsHolder input[type="button"] {
     width: 56px;
     height: 10px;
     top: 3px;
-    left: 3px;
+    left: 4px;
 }
 
 .oneBuilding {
-    top: 0;
-    left: 0;
-    width: 15px;
+    width: 25%;
     height: 100%;
     background-color: green;
 }
 
 .twoBuildings {
-    top: 0;
-    left: 0;
-    width: 30px;
+    width: 50%;
     height: 100%;
     background-color: green;
 }
 
 .threeBuildings {
-    top: 0;
-    left: 0;
-    width: 45px;
+    width: 75%;
     height: 100%;
     background-color: green;
 }
 
 .fourBuildings {
-    top: 0;
-    left: 0;
-    width: 60px;
+    width: 100%;
     height: 100%;
     background-color: green;
 }
 
 .hotel {
-    top: 0;
-    left: 0;
-    width: 60px;
+    width: 100%;
     height: 100%;
     background-color: red;
 }

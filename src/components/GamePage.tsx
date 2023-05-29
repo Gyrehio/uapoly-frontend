@@ -483,34 +483,34 @@ class GamePage extends Component<GamePageProps, GamePageState> {
                     if (this.state.gameInfos.slots[nb].owner.accountLogin === player.accountLogin) {
                         selector.classList.add(`owned${cpt+1}`);
                         found = true;
-                        let buildingBar = document.createElement("td");
+                        let buildingBar = document.createElement("div");
                         console.log(this.state.gameInfos.slots[nb].numberOfBuildings);
                         if (this.state.gameInfos.slots[nb].numberOfBuildings >= 0) {
                             buildingBar.classList.add("buildingBarContainer");
                             selector.appendChild(buildingBar);
                             if (this.state.gameInfos.slots[nb].numberOfBuildings === 1) {
                                 let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
-                                let oneBuild = document.createElement("td");
+                                let oneBuild = document.createElement("div");
                                 oneBuild.classList.add("oneBuilding");
                                 select.appendChild(oneBuild);
                             } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 2) {
                                 let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
-                                let twoBuilds = document.createElement("td");
+                                let twoBuilds = document.createElement("div");
                                 twoBuilds.classList.add("twoBuildings");
                                 select.appendChild(twoBuilds);
                             } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 3) {
                                 let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
-                                let threeBuilds = document.createElement("td");
+                                let threeBuilds = document.createElement("div");
                                 threeBuilds.classList.add("threeBuildings");
                                 select.appendChild(threeBuilds);
                             } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 4) {
                                 let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
-                                let fourBuilds = document.createElement("td");
+                                let fourBuilds = document.createElement("div");
                                 fourBuilds.classList.add("fourBuildings");
                                 select.appendChild(fourBuilds);
                             } else if (this.state.gameInfos.slots[nb].numberOfBuildings === 5) {
                                 let select = document.querySelector(`td#slot${nb} .buildingBarContainer`);
-                                let hotel = document.createElement("td");
+                                let hotel = document.createElement("div");
                                 hotel.classList.add("hotel");
                                 select.appendChild(hotel);
                             }
